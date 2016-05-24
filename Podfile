@@ -1,0 +1,5 @@
+platform:ios,'7.0'
+pod 'XMPPFramework','~>3.6.6'
+pod 'SDWebImage','~>3.7.5'
+pod 'Masonry', '~> 1.0.0'
+pod 'RegexKitLite', '~> 4.0'
