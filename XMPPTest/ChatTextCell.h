@@ -10,6 +10,11 @@
 #import "ChatModel.h"
 @interface ChatTextCell : UITableViewCell
 
+@property (nonatomic ,strong)UIButton *iconBtn;
+@property (nonatomic ,strong)UIImageView *bgImgView;
+@property (nonatomic ,strong)UILabel *messageLabel;
+@property (nonatomic ,strong)UIImageView *voiceImg;
+
 - (void)configCellWithModel:(ChatModel *)model;
 
 @end

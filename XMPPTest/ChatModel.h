@@ -22,4 +22,5 @@ typedef NS_ENUM(NSInteger,ChatCellOwner) {
 @property (nonatomic ,assign)CGSize messageLabelSize;
 @property (nonatomic ,assign)BOOL isSingleLine;
 @property (nonatomic ,assign)CGFloat messageMinHeight;
+@property (nonatomic ,assign)CGFloat cellHeight;
 @end

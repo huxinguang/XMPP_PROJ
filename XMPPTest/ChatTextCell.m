@@ -16,11 +16,6 @@
 
 @interface ChatTextCell ()
 
-@property (nonatomic ,strong)UIButton *iconBtn;
-@property (nonatomic ,strong)UIImageView *bgImgView;
-@property (nonatomic ,strong)UILabel *messageLabel;
-@property (nonatomic ,strong)UIImageView *voiceImg;
-
 @end
 
 
@@ -34,7 +29,6 @@
 
         _iconBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.contentView addSubview:_iconBtn];
-        
         
         _bgImgView = [[UIImageView alloc]init];
         [self.contentView addSubview:_bgImgView];

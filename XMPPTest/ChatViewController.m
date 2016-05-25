@@ -35,7 +35,21 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
     
 };
 
+typedef NS_ENUM(NSInteger,KeyboardNextState) {
+    KeyboardToShow,
+    KeyboardToHide
+};
+
+typedef NS_ENUM(NSInteger,CurrentKeyboard) {
+    CurrentKeyboardText,
+    CurrentKeyboardFace,
+    CurrentKeyboardMedia
+};
+
+
 @interface ChatViewController ()<UITableViewDataSource,UITableViewDelegate,XMPPStreamDelegate,NSFetchedResultsControllerDelegate,ZBMessageInputViewDelegate,ZBMessageShareMenuViewDelegate,ZBMessageManagerFaceViewDelegate>{
+    
+    CurrentKeyboard currentKeyboard;
     double animationDuration;
     CGRect keyboardRect;
     CGFloat previousToolViewHeight;
@@ -51,7 +65,7 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
     NSString *playName;//录音名字
 }
 
-@property (weak, nonatomic) IBOutlet UITableView *chatTableView;
+@property (nonatomic, strong) UITableView *chatTableView;
 
 @property (nonatomic ,strong)NSMutableArray *dataArr;
 
@@ -71,9 +85,11 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
     self.messageToolView = nil;
     self.faceView = nil;
     self.shareMenuView = nil;
-    
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"SendMessageNotification" object:nil];
     
 //    [self.messageToolView removeObserver:self forKeyPath:@"frame" context:nil];
     
@@ -85,21 +101,10 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [[NSNotificationCenter defaultCenter]addObserver:self
-                                            selector:@selector(keyboardWillShow:)
-                                                name:UIKeyboardWillShowNotification
-                                              object:nil];
-    
-    [[NSNotificationCenter defaultCenter]addObserver:self
-                                            selector:@selector(keyboardWillHide:)
-                                                name:UIKeyboardWillHideNotification
-                                              object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self
-                                            selector:@selector(sendMsg)
-                                                name:@"SendMessageNotification"
-                                              object:nil];
+}
 
-    
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
 }
 
 - (void)viewDidLoad {
@@ -107,6 +112,7 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
     self.view.backgroundColor = Color(235, 235, 235);
     self.navigationItem.title = self.friendJID.user;
     previousToolViewHeight = InputViewHeight;
+    [self addNotification];
     [self initilzer];
     
     animationDuration = 0.25;
@@ -123,8 +129,36 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
 
 }
 
+- (void)addNotification{
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(keyboardWillShow:)
+                                                name:UIKeyboardWillShowNotification
+                                              object:nil];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(keyboardWillHide:)
+                                                name:UIKeyboardWillHideNotification
+                                              object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(keyboardDidShow:)
+                                                name:UIKeyboardDidShowNotification
+                                              object:nil];
+    
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(sendMsg)
+                                                name:@"SendMessageNotification"
+                                              object:nil];
+
+}
+
 #pragma mark - 初始化
 - (void)initilzer{
+    self.chatTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-InputViewHeight) style:UITableViewStylePlain];
+    self.chatTableView.dataSource = self;
+    self.chatTableView.delegate = self;
+    [self.view addSubview:self.chatTableView];
     
     self.messageToolView = [[ZBMessageInputView alloc]initWithFrame:CGRectMake(0, ScreenHeight - InputViewHeight,ScreenWidth,InputViewHeight)];
     self.messageToolView.layer.masksToBounds = YES;
@@ -166,24 +200,14 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
     }
 }
 
+
 #pragma mark - ZBMessageInputView Delegate
 - (void)didSelectedMultipleMediaAction:(BOOL)changed{
     
     if (changed)
     {
         [self.view insertSubview:self.shareMenuView aboveSubview:self.faceView];
-        [self messageViewAnimationWithMessageRect:self.shareMenuView.frame
-                         withMessageInputViewRect:self.messageToolView.frame
-                                      andDuration:animationDuration
-                                         andState:ZBMessageViewStateShowShare
-                         doesToolViewNeedAnimation:YES];
-    }
-    else{
-        [self messageViewAnimationWithMessageRect:keyboardRect
-                         withMessageInputViewRect:self.messageToolView.frame
-                                      andDuration:animationDuration
-                                         andState:ZBMessageViewStateShowKeyboard
-                        doesToolViewNeedAnimation:NO];
+        [self animateMediaKeyboardWithState:KeyboardToShow currentHeight:self.shareMenuView.frame.size.height toolBarHeight:self.messageToolView.frame.size.height duration:animationDuration];
     }
     
 }
@@ -191,36 +215,21 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
 - (void)didSendFaceAction:(BOOL)sendFace{
     if (sendFace) {
         [self.view insertSubview:self.faceView aboveSubview:self.shareMenuView];
-        [self messageViewAnimationWithMessageRect:self.faceView.frame
-                         withMessageInputViewRect:self.messageToolView.frame
-                                      andDuration:animationDuration
-                                         andState:ZBMessageViewStateShowFace
-                        doesToolViewNeedAnimation:YES];
+        [self animateFaceKeyboardWithState:KeyboardToShow currentHeight:self.faceView.frame.size.height toolBarHeight:self.messageToolView.frame.size.height duration:animationDuration];
     }
-    else{
-        [self messageViewAnimationWithMessageRect:keyboardRect
-                         withMessageInputViewRect:self.messageToolView.frame
-                                      andDuration:animationDuration
-                                         andState:ZBMessageViewStateShowKeyboard
-                        doesToolViewNeedAnimation:NO];
-    }
+
 }
 
 - (void)didChangeSendVoiceAction:(BOOL)changed{
-    if (changed){
-        [self messageViewAnimationWithMessageRect:keyboardRect
-                         withMessageInputViewRect:self.messageToolView.frame
-                                      andDuration:animationDuration
-                                         andState:ZBMessageViewStateShowKeyboard
-                        doesToolViewNeedAnimation:YES];
+    if (!changed){
+        if (currentKeyboard == CurrentKeyboardFace) {
+            [self animateFaceKeyboardWithState:KeyboardToHide currentHeight:self.faceView.frame.size.height toolBarHeight:self.messageToolView.frame.size.height duration:animationDuration];
+        }else if (currentKeyboard == CurrentKeyboardMedia){
+        
+            [self animateMediaKeyboardWithState:KeyboardToHide currentHeight:self.shareMenuView.frame.size.height toolBarHeight:self.messageToolView.frame.size.height duration:animationDuration];
+        }
     }
-    else{
-        [self messageViewAnimationWithMessageRect:CGRectZero
-                         withMessageInputViewRect:self.messageToolView.frame
-                                      andDuration:animationDuration
-                                         andState:ZBMessageViewStateShowNone
-                        doesToolViewNeedAnimation:YES];
-    }
+
 }
 
 //
@@ -248,12 +257,6 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
 
 - (void)inputTextViewDidBeginEditing:(ZBMessageTextView *)messageInputTextView
 {
-//    [self messageViewAnimationWithMessageRect:keyboardRect
-//                     withMessageInputViewRect:self.messageToolView.frame
-//                                  andDuration:animationDuration
-//                                     andState:ZBMessageViewStateShowNone
-//                    doesToolViewNeedAnimation:YES];
-    
     if (!self.previousTextViewContentHeight)
     {
         self.previousTextViewContentHeight = messageInputTextView.contentSize.height;
@@ -317,12 +320,7 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
 //    
 //    [messageInputTextView setText:nil];
 //    [self inputTextViewDidChange:messageInputTextView];
-    if ([messageInputTextView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0) {
-        XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.friendJID];
-        [message addBody:messageInputTextView.text];
-        [[XMPPManager shareManager].xmppStream sendElement:message];
-        [messageInputTextView setText:nil];
-    }
+    [self sendMessage:nil];
     
 }
 
@@ -341,7 +339,9 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
 
 - (void)sendMsg{
 
+    
     [self sendMessage:nil];
+    
 }
 
 
@@ -396,6 +396,18 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
                 }
                 
             }
+            
+            //缓存cell高度
+            for (int j = 0; j < _dataArr.count; j++) {
+                ChatModel *model = [_dataArr objectAtIndex:j];
+                CGFloat cellHeight = MessageTopOffset + model.messageLabelSize.height + MessageBottomOffset + MessageBgBottomOffset;
+                if (cellHeight < MessageBgTopOffset+45+MessageBgBottomOffset) {
+                    cellHeight = MessageBgTopOffset+45+MessageBgBottomOffset;
+                }
+                model.cellHeight = cellHeight;
+            }
+            
+            
             
             [_chatTableView reloadData];
             if (_dataArr.count > 0) {
@@ -507,7 +519,10 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
     if (cell == nil) {
         cell = [[ChatTextCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
+    
     [cell configCellWithModel:[_dataArr objectAtIndex:indexPath.row]];
+    cell.iconBtn.tag = indexPath.row;
+    [cell.iconBtn addTarget:self action:@selector(cellIconClickAction:) forControlEvents:UIControlEventTouchUpInside];
     return cell;
 }
 
@@ -515,11 +530,12 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     ChatModel *model = [_dataArr objectAtIndex:indexPath.row];
-    CGFloat cellHeight = MessageTopOffset + model.messageLabelSize.height + MessageBottomOffset + MessageBgBottomOffset;
-    if (cellHeight < MessageBgTopOffset+45+MessageBgBottomOffset) {
-        cellHeight = MessageBgTopOffset+45+MessageBgBottomOffset;
-    }
-    return cellHeight;
+//    CGFloat cellHeight = MessageTopOffset + model.messageLabelSize.height + MessageBottomOffset + MessageBgBottomOffset;
+//    if (cellHeight < MessageBgTopOffset+45+MessageBgBottomOffset) {
+//        cellHeight = MessageBgTopOffset+45+MessageBgBottomOffset;
+//    }
+//    return cellHeight;
+    return model.cellHeight;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -532,11 +548,24 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
     }
 }
 
+- (void)cellIconClickAction:(UIButton *)btn{
+
+    NSLog(@"点击第%d行的头像",(int)btn.tag);
+}
+
+
 - (void)hideKeyboard{
     [self.messageToolView.messageInputTextView resignFirstResponder];
     self.messageToolView.faceSendButton.selected = NO;
     self.messageToolView.multiMediaSendButton.selected = NO;
-    [self messageViewAnimationWithMessageRect:CGRectZero withMessageInputViewRect:self.messageToolView.frame andDuration:animationDuration andState:ZBMessageViewStateShowNone doesToolViewNeedAnimation:YES];
+    
+    if (currentKeyboard == CurrentKeyboardFace) {
+        [self animateFaceKeyboardWithState:KeyboardToHide currentHeight:self.faceView.frame.size.height toolBarHeight:self.messageToolView.frame.size.height duration:animationDuration];
+    }else if (currentKeyboard == CurrentKeyboardMedia){
+        [self animateMediaKeyboardWithState:KeyboardToHide currentHeight:self.shareMenuView.frame.size.height toolBarHeight:self.messageToolView.frame.size.height duration:animationDuration];
+    }
+    
+    
 }
 
 
@@ -570,144 +599,173 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
 
 #pragma mark -keyboard
 
-- (void)keyboardWillHide:(NSNotification *)notification{
-    
-    animationDuration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    keyboardRect = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    //先判断工具条的高度,如果大于50则按照50来处理
-    previousToolViewHeight = self.messageToolView.frame.size.height;
-    
-    
-    if ((!self.messageToolView.voiceChangeButton.selected)  &&  (!self.messageToolView.faceSendButton.selected) && (!self.messageToolView.multiMediaSendButton.selected)) {
-        [self messageViewAnimationWithMessageRect:CGRectZero
-                         withMessageInputViewRect:self.messageToolView.frame
-                                      andDuration:animationDuration
-                                         andState:ZBMessageViewStateShowNone
-                        doesToolViewNeedAnimation:YES];
-    }else{
-//        [self messageViewAnimationWithMessageRect:CGRectZero
-//                         withMessageInputViewRect:self.messageToolView.frame
-//                                      andDuration:animationDuration
-//                                         andState:ZBMessageViewStateShowNone
-//                        doesToolViewNeedAnimation:NO];
-    }
-    
-    [UIView animateWithDuration:animationDuration animations:^{
-        if (_chatTableView.contentSize.height > _chatTableView.frame.size.height) {
-            _chatTableView.contentOffset = CGPointMake(0, _chatTableView.contentSize.height-_chatTableView.frame.size.height);
-        }else{
-            _chatTableView.contentOffset = CGPointMake(0, -64);
-        }
-    } completion:nil];
-    
-    
-}
-
 - (void)keyboardWillShow:(NSNotification *)notification{
-
     animationDuration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     keyboardRect = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    
-    [UIView animateWithDuration:animationDuration animations:^{
-        if (_chatTableView.contentSize.height-(_chatTableView.frame.size.height- keyboardRect.size.height) > 0) {
-            _chatTableView.contentOffset = CGPointMake(0, _chatTableView.contentSize.height-(_chatTableView.frame.size.height- keyboardRect.size.height));
-        }
-        
-    } completion:nil];
-    
-    if ([[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].origin.y<CGRectGetHeight(self.view.frame)) {
-        [self messageViewAnimationWithMessageRect:[[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue]
-                         withMessageInputViewRect:self.messageToolView.frame
-                                      andDuration:animationDuration
-                                         andState:ZBMessageViewStateShowNone
-                        doesToolViewNeedAnimation:YES];
-    }
+    [self animateTextKeyboardWithState:KeyboardToShow currentHeight:keyboardRect.size.height toolBarHeight:self.messageToolView.frame.size.height duration:animationDuration];
+}
+
+
+- (void)keyboardDidShow:(NSNotification *)notification{
+    currentKeyboard = CurrentKeyboardText;
     
 }
+
+
+- (void)keyboardWillHide:(NSNotification *)notification{
+    animationDuration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    keyboardRect = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    [self animateTextKeyboardWithState:KeyboardToHide currentHeight:keyboardRect.size.height toolBarHeight:self.messageToolView.frame.size.height duration:animationDuration];
+}
+
 
 #pragma end
 
 
-#pragma mark - messageView animation
-- (void)messageViewAnimationWithMessageRect:(CGRect)rect  withMessageInputViewRect:(CGRect)inputViewRect andDuration:(double)duration andState:(ZBMessageViewState)state doesToolViewNeedAnimation:(BOOL)need{
+- (void)animateTextKeyboardWithState:(KeyboardNextState)nextState currentHeight:(CGFloat)keyboardHeight toolBarHeight:(CGFloat)barHeight duration:(double)duration{
+
+    if (nextState == KeyboardToShow) {
+        
+        [self scroChatTableViewToBottom];
+        
+        [UIView animateWithDuration:duration animations:^{
+            
+            if (_chatTableView.contentSize.height >= _chatTableView.frame.size.height-NavBarHeight) {
+                
+                self.chatTableView.frame = CGRectMake(0, -keyboardHeight, ScreenWidth, ScreenHeight-barHeight);
+                
+            }else if (_chatTableView.contentSize.height + keyboardHeight  <= _chatTableView.frame.size.height-NavBarHeight)
+            {
+                //不需要改变
+                
+            }else if (_chatTableView.contentSize.height + keyboardHeight > _chatTableView.frame.size.height-NavBarHeight && _chatTableView.contentSize.height < _chatTableView.frame.size.height-NavBarHeight){
+                
+                self.chatTableView.frame = CGRectMake(0, -(_chatTableView.contentSize.height + keyboardHeight - (_chatTableView.frame.size.height-NavBarHeight)), ScreenWidth, ScreenHeight-barHeight);
+                
+            }
+            
+            self.messageToolView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame)-keyboardHeight-barHeight,CGRectGetWidth(self.view.frame),barHeight);
+            self.faceView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),CGRectGetHeight(self.faceView.frame));
+            self.shareMenuView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),CGRectGetHeight(self.shareMenuView.frame));
+            
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+        
+    }else{
+        
+        [UIView animateWithDuration:duration animations:^{
+            
+            self.chatTableView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight-barHeight);
+            self.messageToolView.frame = CGRectMake(0,CGRectGetHeight(self.view.frame)-barHeight,CGRectGetWidth(self.view.frame),barHeight);
+            self.faceView.frame = CGRectMake(0,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),CGRectGetHeight(self.faceView.frame));
+            self.shareMenuView.frame = CGRectMake(0,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),CGRectGetHeight(self.shareMenuView.frame));
+            
+        } completion:^(BOOL finished) {
+            
+        }];
     
-    [UIView animateWithDuration:duration animations:^{
-        if (need) {
-            
-            self.messageToolView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame)-CGRectGetHeight(rect)-CGRectGetHeight(inputViewRect),CGRectGetWidth(self.view.frame),CGRectGetHeight(inputViewRect));
-        }
-        if (self.chatTableView.contentSize.height-(self.chatTableView.frame.size.height- CGRectGetHeight(rect)) > -64) {
-            self.chatTableView.contentOffset = CGPointMake(0, self.chatTableView.contentSize.height-(self.chatTableView.frame.size.height- CGRectGetHeight(rect)));
-        }else{
-            self.chatTableView.contentOffset = CGPointMake(0, -64);
-        }
-        
-        switch (state) {
-            case ZBMessageViewStateShowFace:
-            {
-                self.faceView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame)-CGRectGetHeight(rect),CGRectGetWidth(self.view.frame),CGRectGetHeight(rect));
-                
-            }
-                break;
-                
-            case ZBMessageViewStateShowShare:
-            {
-                self.shareMenuView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame)-CGRectGetHeight(rect),CGRectGetWidth(self.view.frame),CGRectGetHeight(rect));
-                
-            }
-                break;
-            case ZBMessageViewStateShowKeyboard:
-            {
+    }
 
-            }
-                break;
-            
-            case ZBMessageViewStateShowNone:
-            {
-                self.faceView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),CGRectGetHeight(self.faceView.frame));
-                
-                self.shareMenuView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),CGRectGetHeight(self.shareMenuView.frame));
-            }
-                break;
-                
-            default:
-                break;
-        }
-        
-    } completion:^(BOOL finished) {
-        
-        
-        switch (state) {
-            case ZBMessageViewStateShowFace:
-            {
-                self.shareMenuView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),CGRectGetHeight(self.shareMenuView.frame));
-            }
-                break;
-                
-            case ZBMessageViewStateShowShare:
-            {
-                self.faceView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),CGRectGetHeight(self.faceView.frame));
-            }
-                break;
-                
-            case ZBMessageViewStateShowKeyboard:
-            {
-                
-            }
-                break;
-                
-            case ZBMessageViewStateShowNone:
-            {
-
-            }
-                break;
-                
-            default:
-                break;
-        }
-        
-    }];
 }
+
+- (void)animateFaceKeyboardWithState:(KeyboardNextState)nextState currentHeight:(CGFloat)keyboardHeight toolBarHeight:(CGFloat)barHeight duration:(double)duration{
+    
+    if (nextState == KeyboardToShow) {
+        [self scroChatTableViewToBottom];
+        
+        [UIView animateWithDuration:duration animations:^{
+            
+            if (_chatTableView.contentSize.height >= _chatTableView.frame.size.height-NavBarHeight)
+            {
+                self.chatTableView.frame = CGRectMake(0, -keyboardHeight, ScreenWidth, ScreenHeight-barHeight);
+            }
+            else if (_chatTableView.contentSize.height + keyboardHeight  <= _chatTableView.frame.size.height-NavBarHeight)
+            {
+                //不需要改变
+            }
+            else if (_chatTableView.contentSize.height + keyboardHeight > _chatTableView.frame.size.height-NavBarHeight && _chatTableView.contentSize.height < _chatTableView.frame.size.height-NavBarHeight)
+            {
+                self.chatTableView.frame = CGRectMake(0, -(_chatTableView.contentSize.height + keyboardHeight - (_chatTableView.frame.size.height-NavBarHeight)), ScreenWidth, ScreenHeight-barHeight);
+            }
+            
+            self.faceView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame)-keyboardHeight,CGRectGetWidth(self.view.frame),keyboardHeight);
+            self.messageToolView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame)-keyboardHeight-barHeight,CGRectGetWidth(self.view.frame),barHeight);
+            
+        } completion:^(BOOL finished) {
+            
+            self.shareMenuView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),CGRectGetHeight(self.shareMenuView.frame));
+            currentKeyboard = CurrentKeyboardFace;
+            
+        }];
+        
+    }else{
+        
+        [UIView animateWithDuration:duration animations:^{
+            self.chatTableView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight-barHeight);
+            self.messageToolView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame)-barHeight,CGRectGetWidth(self.view.frame),barHeight);
+            self.faceView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),keyboardHeight);
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+    }
+    
+}
+
+- (void)animateMediaKeyboardWithState:(KeyboardNextState)nextState currentHeight:(CGFloat)keyboardHeight toolBarHeight:(CGFloat)barHeight duration:(double)duration{
+    
+    if (nextState == KeyboardToShow) {
+        [self scroChatTableViewToBottom];
+        
+        [UIView animateWithDuration:duration animations:^{
+            
+            if (_chatTableView.contentSize.height >= _chatTableView.frame.size.height-NavBarHeight)
+            {
+                self.chatTableView.frame = CGRectMake(0, -keyboardHeight, ScreenWidth, ScreenHeight-barHeight);
+            }
+            else if (_chatTableView.contentSize.height + keyboardHeight  <= _chatTableView.frame.size.height-NavBarHeight)
+            {
+                //不需要改变
+            }
+            else if (_chatTableView.contentSize.height + keyboardHeight > _chatTableView.frame.size.height-NavBarHeight && _chatTableView.contentSize.height < _chatTableView.frame.size.height-NavBarHeight)
+            {
+                self.chatTableView.frame = CGRectMake(0, -(_chatTableView.contentSize.height + keyboardHeight - (_chatTableView.frame.size.height-NavBarHeight)), ScreenWidth, ScreenHeight-barHeight);
+            }
+            
+            self.shareMenuView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame)-keyboardHeight,CGRectGetWidth(self.view.frame),keyboardHeight);
+            self.messageToolView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame)-keyboardHeight-barHeight,CGRectGetWidth(self.view.frame),barHeight);
+            
+        } completion:^(BOOL finished) {
+            
+            self.faceView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),CGRectGetHeight(self.faceView.frame));
+            currentKeyboard = CurrentKeyboardMedia;
+            
+        }];
+        
+    }else{
+        
+        [UIView animateWithDuration:duration animations:^{
+            self.chatTableView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight-barHeight);
+            self.messageToolView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame)-barHeight,CGRectGetWidth(self.view.frame),barHeight);
+            self.shareMenuView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),keyboardHeight);
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+    }
+
+}
+
+
+- (void)scroChatTableViewToBottom{
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow: _dataArr.count-1 inSection:0];
+    [_chatTableView scrollToRowAtIndexPath: indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+
+}
+
 
 
 #pragma mark - ZBMessageFaceViewDelegate
@@ -767,24 +825,13 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
 
 // 按下录音按钮开始录音
 - (void)didStartRecordingVoiceAction{
-    
 
     voiceAnimationView = [[UIImageView alloc]initWithFrame:CGRectMake(ScreenWidth/2-122/2, ScreenHeight/2-122/2, 122, 122)];
     voiceAnimationView.backgroundColor = [UIColor colorWithWhite:0.2 alpha:0.8];
     [[UIApplication sharedApplication].keyWindow addSubview:voiceAnimationView];
     voiceAnimationView.layer.masksToBounds = YES;
     voiceAnimationView.layer.cornerRadius = 3;
-//
-//    NSMutableArray *imgArr = [NSMutableArray array];
-//    for (int i = 0 ; i < 7; i++) {
-//        UIImage *img = [UIImage imageNamed:[NSString stringWithFormat:@"press_speak_icon_%d",i]];
-//        [imgArr addObject:img];
-//    }
-//    voiceAnimationView.animationImages = imgArr;
-//    voiceAnimationView.animationDuration = 1;
-//    [voiceAnimationView startAnimating];
-//    
-//    NSLog(@"开始录音");
+
     
     [self configAudioSettings];
     if ([self canRecord]) {
@@ -809,11 +856,6 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
         }
     }
     
-    
-    
-    
-    
-    
 }
 
 // 手指向上滑动取消录音
@@ -824,13 +866,6 @@ typedef NS_ENUM(NSInteger,ZBMessageViewState) {
         NSLog(@"文件删除成功");
     }
     recorder = nil;
-    
-    
-    
-    
-    
-    
-    
     
     [timer invalidate];
     timer = nil;

@@ -67,7 +67,6 @@
 		C971D7151CEEBD1D00C9F89C /* HXGVoiceTool.m in Sources */ = {isa = PBXBuildFile; fileRef = C971D7141CEEBD1D00C9F89C /* HXGVoiceTool.m */; };
 		C971D7171CF2B3EF00C9F89C /* RecordCancel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C971D7161CF2B3EF00C9F89C /* RecordCancel@2x.png */; };
 		C9897CB31CE06A2800E9F8B4 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */; };
-		C9897CB41CE06A2800E9F8B4 /* ChatViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9897CB21CE06A2800E9F8B4 /* ChatViewController.xib */; };
 		C9897CBD1CE082D200E9F8B4 /* ChatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CBC1CE082D200E9F8B4 /* ChatModel.m */; };
 		C9897CCB1CE1798F00E9F8B4 /* ChatTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CCA1CE1798F00E9F8B4 /* ChatTextCell.m */; };
 		C9897CD31CE1A96D00E9F8B4 /* chat_dialog_others@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9897CD11CE1A96D00E9F8B4 /* chat_dialog_others@2x.png */; };
@@ -262,7 +261,6 @@
 		C971D7161CF2B3EF00C9F89C /* RecordCancel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RecordCancel@2x.png"; sourceTree = "<group>"; };
 		C9897CB01CE06A2800E9F8B4 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
-		C9897CB21CE06A2800E9F8B4 /* ChatViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChatViewController.xib; sourceTree = "<group>"; };
 		C9897CBB1CE082D200E9F8B4 /* ChatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatModel.h; sourceTree = "<group>"; };
 		C9897CBC1CE082D200E9F8B4 /* ChatModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatModel.m; sourceTree = "<group>"; };
 		C9897CC11CE08D5F00E9F8B4 /* XMPPTestConfig.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XMPPTestConfig.pch; sourceTree = "<group>"; };
@@ -454,7 +452,6 @@
 				C98AEC821CDC90D9005C7DAC /* RosterTableViewCell.xib */,
 				C9897CB01CE06A2800E9F8B4 /* ChatViewController.h */,
 				C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */,
-				C9897CB21CE06A2800E9F8B4 /* ChatViewController.xib */,
 				C9897CC91CE1798F00E9F8B4 /* ChatTextCell.h */,
 				C9897CCA1CE1798F00E9F8B4 /* ChatTextCell.m */,
 				C9897CBB1CE082D200E9F8B4 /* ChatModel.h */,
@@ -868,7 +865,6 @@
 				C9897D721CE3354000E9F8B4 /* Expression_20@2x.png in Resources */,
 				C970294C1CE9B878005A6674 /* press_speak_icon_1@2x.png in Resources */,
 				C9897D641CE3354000E9F8B4 /* Expression_6@2x.png in Resources */,
-				C9897CB41CE06A2800E9F8B4 /* ChatViewController.xib in Resources */,
 				C9897D7A1CE3354000E9F8B4 /* Expression_28@2x.png in Resources */,
 				C98AEC841CDC90D9005C7DAC /* RosterTableViewCell.xib in Resources */,
 				C9897D801CE3354000E9F8B4 /* Expression_34@2x.png in Resources */,

@@ -343,7 +343,7 @@
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView{
-    [textView becomeFirstResponder];
+//    [textView becomeFirstResponder];
     
     if ([self.delegate respondsToSelector:@selector(inputTextViewDidBeginEditing:)]) {
         [self.delegate inputTextViewDidBeginEditing:self.messageInputTextView];

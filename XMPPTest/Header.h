@@ -32,7 +32,7 @@
 // 尺寸
 #define ScreenWidth                 [[UIScreen mainScreen] bounds].size.width
 #define ScreenHeight                [[UIScreen mainScreen] bounds].size.height
-#define NavBarHeight                44
+#define NavBarHeight                64
 
 // 颜色
 #define ColorA(r, g, b, a)          [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]
