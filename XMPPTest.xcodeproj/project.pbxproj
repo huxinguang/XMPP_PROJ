@@ -66,6 +66,7 @@
 		C971D7121CEDB61900C9F89C /* ChatTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = C971D7111CEDB61900C9F89C /* ChatTextAttachment.m */; };
 		C971D7151CEEBD1D00C9F89C /* HXGVoiceTool.m in Sources */ = {isa = PBXBuildFile; fileRef = C971D7141CEEBD1D00C9F89C /* HXGVoiceTool.m */; };
 		C971D7171CF2B3EF00C9F89C /* RecordCancel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C971D7161CF2B3EF00C9F89C /* RecordCancel@2x.png */; };
+		C971D71A1CF6CDBE00C9F89C /* HJShapedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C971D7191CF6CDBE00C9F89C /* HJShapedImageView.m */; };
 		C9897CB31CE06A2800E9F8B4 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */; };
 		C9897CBD1CE082D200E9F8B4 /* ChatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CBC1CE082D200E9F8B4 /* ChatModel.m */; };
 		C9897CCB1CE1798F00E9F8B4 /* ChatTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CCA1CE1798F00E9F8B4 /* ChatTextCell.m */; };
@@ -259,6 +260,8 @@
 		C971D7131CEEBD1D00C9F89C /* HXGVoiceTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HXGVoiceTool.h; sourceTree = "<group>"; };
 		C971D7141CEEBD1D00C9F89C /* HXGVoiceTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HXGVoiceTool.m; sourceTree = "<group>"; };
 		C971D7161CF2B3EF00C9F89C /* RecordCancel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RecordCancel@2x.png"; sourceTree = "<group>"; };
+		C971D7181CF6CDBE00C9F89C /* HJShapedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJShapedImageView.h; sourceTree = "<group>"; };
+		C971D7191CF6CDBE00C9F89C /* HJShapedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HJShapedImageView.m; sourceTree = "<group>"; };
 		C9897CB01CE06A2800E9F8B4 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		C9897CBB1CE082D200E9F8B4 /* ChatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatModel.h; sourceTree = "<group>"; };
@@ -460,6 +463,8 @@
 				C971D7111CEDB61900C9F89C /* ChatTextAttachment.m */,
 				C971D7131CEEBD1D00C9F89C /* HXGVoiceTool.h */,
 				C971D7141CEEBD1D00C9F89C /* HXGVoiceTool.m */,
+				C971D7181CF6CDBE00C9F89C /* HJShapedImageView.h */,
+				C971D7191CF6CDBE00C9F89C /* HJShapedImageView.m */,
 				C9897D1D1CE3351700E9F8B4 /* Emotion */,
 				C9897D091CE30AEA00E9F8B4 /* KeyboardTool */,
 				C9897CE91CE2E75400E9F8B4 /* KeyboardImg */,
@@ -1037,6 +1042,7 @@
 				C971D7151CEEBD1D00C9F89C /* HXGVoiceTool.m in Sources */,
 				C9897CFC1CE304D600E9F8B4 /* ZBMessageShareMenuItem.m in Sources */,
 				C9897D021CE3081700E9F8B4 /* ZBFaceView.m in Sources */,
+				C971D71A1CF6CDBE00C9F89C /* HJShapedImageView.m in Sources */,
 				C9897CB31CE06A2800E9F8B4 /* ChatViewController.m in Sources */,
 				C9897CE81CE2E67000E9F8B4 /* NSString+Message.m in Sources */,
 				13A749571CCC7F4F00F2E86E /* main.m in Sources */,

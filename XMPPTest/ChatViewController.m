@@ -266,6 +266,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 - (void)inputTextViewDidChange:(ZBMessageTextView *)messageInputTextView
 {
+    NSLog(@"++++++++++ %f",messageInputTextView.contentSize.height);
     CGFloat maxHeight = [ZBMessageInputView maxHeight];
     CGSize size = [messageInputTextView sizeThatFits:CGSizeMake(CGRectGetWidth(messageInputTextView.frame), maxHeight)];
     CGFloat textViewContentHeight = size.height;
@@ -283,7 +284,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     
     if(changeInHeight != 0.0f) {
         
-        [UIView animateWithDuration:0.01f
+        [UIView animateWithDuration:0.25f
                          animations:^{
                              
                              if(isShrinking) {
@@ -296,6 +297,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                                                                      inputViewFrame.origin.y - changeInHeight,
                                                                      inputViewFrame.size.width,
                                                                      inputViewFrame.size.height + changeInHeight);
+                             CGRect chatViewFrame = self.chatTableView.frame;
+                             self.chatTableView.frame = CGRectMake(0, chatViewFrame.origin.y, ScreenWidth, chatViewFrame.size.height-changeInHeight);
                              
                              if(!isShrinking) {
                                  [self.messageToolView adjustTextViewHeightBy:changeInHeight];
@@ -303,6 +306,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                          }
                          completion:^(BOOL finished) {
                              
+                             [self scroChatTableViewToBottom];
                          }];
         
         self.previousTextViewContentHeight = MIN(textViewContentHeight, maxHeight);
@@ -331,6 +335,17 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
         [msg addBody:self.messageToolView.messageInputTextView.text];
         [[XMPPManager shareManager].xmppStream sendElement:msg];
         [self.messageToolView.messageInputTextView setText:nil];
+        
+
+//        CGFloat difference = self.messageToolView.frame.size.height - InputViewHeight;
+//        if (difference > 0) {
+//            CGRect chatViewFrame = self.chatTableView.frame;
+//            self.chatTableView.frame = CGRectMake(0, chatViewFrame.origin.y, ScreenWidth, chatViewFrame.size.height + difference);
+//            CGRect toolViewFrame = self.messageToolView.frame;
+//            self.messageToolView.frame = CGRectMake(0, toolViewFrame.origin.y + difference , ScreenWidth, InputViewHeight);
+//        }
+        [self inputTextViewDidChange:self.messageToolView.messageInputTextView];
+  
     }
     
 }
@@ -650,11 +665,12 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             
         } completion:^(BOOL finished) {
             
+            
         }];
         
         
     }else{
-        
+        [self scroChatTableViewToBottom];
         [UIView animateWithDuration:duration animations:^{
             
             self.chatTableView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight-barHeight);
@@ -663,6 +679,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             self.shareMenuView.frame = CGRectMake(0,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),CGRectGetHeight(self.shareMenuView.frame));
             
         } completion:^(BOOL finished) {
+        
             
         }];
     
@@ -707,6 +724,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             self.messageToolView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame)-barHeight,CGRectGetWidth(self.view.frame),barHeight);
             self.faceView.frame = CGRectMake(0.0f,CGRectGetHeight(self.view.frame),CGRectGetWidth(self.view.frame),keyboardHeight);
         } completion:^(BOOL finished) {
+            
             
         }];
         

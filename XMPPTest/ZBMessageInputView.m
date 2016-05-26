@@ -306,7 +306,8 @@
 }
 
 + (CGFloat)maxHeight{
-    return ([ZBMessageInputView maxLines] + 1.0f) * [ZBMessageInputView textViewLineHeight];
+    return 100;
+//    return ([ZBMessageInputView maxLines] + 1.0f) * [ZBMessageInputView textViewLineHeight];
 }
 
 + (CGFloat)maxLines{
