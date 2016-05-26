@@ -246,8 +246,8 @@
     self.messageInputTextView.hidden = self.voiceChangeButton.selected;
     
     _messageInputTextView.backgroundColor = [UIColor clearColor];
-    _messageInputTextView.layer.borderColor = [UIColor colorWithWhite:0.8f alpha:1.0f].CGColor;
-    _messageInputTextView.layer.borderWidth = 0.65f;
+    _messageInputTextView.layer.borderColor = Color(185, 185, 185).CGColor;
+    _messageInputTextView.layer.borderWidth = 0.5f;
     _messageInputTextView.layer.cornerRadius = 6.0f;
     
     [self.messageInputTextView mas_makeConstraints:^(MASConstraintMaker *make) {

@@ -13,14 +13,23 @@ typedef NS_ENUM(NSInteger,ChatCellOwner) {
     ChatCellOwnerOther
 };
 
+typedef NS_ENUM(NSInteger,MessageType) {
+    MessageTypeRichText,//包括纯文字，纯表情，文字表情混合
+    MessageTypePhoto,//相册照片、拍照
+    MessageTypeEmotionImage,//表情图片（大）
+    MessageTypeVoice//语音
+};
+
+
 @interface ChatModel : NSObject
 
-
 @property (nonatomic ,assign)ChatCellOwner chatCellOwner;
+@property (nonatomic ,assign)MessageType msgType;
 @property (nonatomic ,strong)NSString *iconUrl;
 @property (nonatomic ,strong)NSMutableAttributedString *message;
 @property (nonatomic ,assign)CGSize messageLabelSize;
 @property (nonatomic ,assign)BOOL isSingleLine;
 @property (nonatomic ,assign)CGFloat messageMinHeight;
 @property (nonatomic ,assign)CGFloat cellHeight;
+
 @end

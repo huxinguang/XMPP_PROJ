@@ -14,10 +14,10 @@
 #import "ZBMessageManagerFaceView.h"
 #import "ZBMessage.h"
 #import "ChatTextAttachment.h"
-#import "HXGVoiceTool.h"
+#import <AVFoundation/AVFoundation.h>
 
 #define  MessageFont [UIFont systemFontOfSize:15]
-#define  MessageMaxWidth 200
+#define  MessageMaxWidth (ScreenWidth - 10*6 - 40*2)
 #define  MessageBgTopOffset 6
 #define  MessageTopOffset 19.5
 #define  MessageBottomOffset (MessageTopOffset - MessageBgTopOffset)

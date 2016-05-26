@@ -8,6 +8,7 @@
 
 #import "ChatTextCell.h"
 
+
 #define Padding 8
 #define OffsetY 8
 #define MessageBgTopOffset 6
@@ -43,6 +44,7 @@
         [self.contentView addSubview:_voiceImg];
         _voiceImg.hidden = YES;
         
+        
     }
     
     return self;
@@ -70,7 +72,6 @@
         
         //设置消息文本frame
         _messageLabel.frame = CGRectMake(ScreenWidth- Padding-40-20- 3 -labelSize.width, MessageTopOffset, labelSize.width, labelSize.height);
-//        _messageLabel.text = model.message;
         _messageLabel.attributedText = model.message;
         
         
@@ -95,7 +96,6 @@
         
         //设置消息文本frame
         _messageLabel.frame = CGRectMake(Padding+40+20+3 , MessageTopOffset, labelSize.width, labelSize.height);
-//        _messageLabel.text = model.message;
         _messageLabel.attributedText = model.message;
     }
 
