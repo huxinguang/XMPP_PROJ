@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XMPPTest/ChatViewController.m"
-            timestampString = "485927317.886894"
+            timestampString = "486022841.70118"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "270"
-            endingLineNumber = "270"
+            startingLineNumber = "275"
+            endingLineNumber = "275"
             landmarkName = "-inputTextViewDidChange:"
             landmarkType = "5">
          </BreakpointContent>

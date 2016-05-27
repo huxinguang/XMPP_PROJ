@@ -22,14 +22,20 @@ typedef NS_ENUM(NSInteger,MessageType) {
 
 
 @interface ChatModel : NSObject
-
+//Common
 @property (nonatomic ,assign)ChatCellOwner chatCellOwner;
 @property (nonatomic ,assign)MessageType msgType;
 @property (nonatomic ,strong)NSString *iconUrl;
+@property (nonatomic ,assign)CGFloat cellHeight;
+//RichText
 @property (nonatomic ,strong)NSMutableAttributedString *message;
 @property (nonatomic ,assign)CGSize messageLabelSize;
 @property (nonatomic ,assign)BOOL isSingleLine;
 @property (nonatomic ,assign)CGFloat messageMinHeight;
-@property (nonatomic ,assign)CGFloat cellHeight;
+//Photo
+
+
+
+
 
 @end

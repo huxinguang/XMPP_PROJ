@@ -20,29 +20,74 @@
 @end
 
 
+static NSString *richTextCellIdentifier = @"RichTextCellIdentifier";
+static NSString *photoCellIdentifier = @"PhotoCellIdentifier";
+static NSString *emotionImageCellIdentifier = @"EmotionImageCellIdentifier";
+static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
+
 @implementation ChatTextCell
 
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        
         self.backgroundColor = [UIColor clearColor];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-
-        _iconBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [self.contentView addSubview:_iconBtn];
         
-        _bgImgView = [[UIImageView alloc]init];
-        [self.contentView addSubview:_bgImgView];
+        //根据不同的cell类型添加子视图
         
-        _messageLabel = [[UILabel alloc]init];
-        _messageLabel.font = MessageFont;
-        _messageLabel.numberOfLines = 0;
-        _messageLabel.lineBreakMode=NSLineBreakByWordWrapping;
-        [self.contentView addSubview:_messageLabel];
+        if ([reuseIdentifier isEqualToString:@"RichTextCellIdentifier"]) {
+            
+            _iconBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            [self.contentView addSubview:_iconBtn];
+            
+            _bgImgView = [[UIImageView alloc]init];
+            [self.contentView addSubview:_bgImgView];
+            
+            _messageLabel = [[UILabel alloc]init];
+            _messageLabel.font = MessageFont;
+            _messageLabel.numberOfLines = 0;
+            _messageLabel.lineBreakMode=NSLineBreakByWordWrapping;
+            [self.contentView addSubview:_messageLabel];
+            
+        }
+        else if ([reuseIdentifier isEqualToString:@"PhotoCellIdentifier"])
+        {
+            _iconBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            [self.contentView addSubview:_iconBtn];
+            
+            _photoMsgBtn = [[ShapedPhotoButtton alloc]init];
+            [self.contentView addSubview:_photoMsgBtn];
         
-        _voiceImg = [[UIImageView alloc]init];
-        [self.contentView addSubview:_voiceImg];
-        _voiceImg.hidden = YES;
+        }
+        else if ([reuseIdentifier isEqualToString:@"EmotionImageCellIdentifier"])
+        {
+        
+            
+        }
+        else if ([reuseIdentifier isEqualToString:@"VoiceCellIdentifier"])
+        {
+            _iconBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            [self.contentView addSubview:_iconBtn];
+            
+            _bgImgView = [[UIImageView alloc]init];
+            [self.contentView addSubview:_bgImgView];
+            
+            _voiceImg = [[UIImageView alloc]init];
+            [self.contentView addSubview:_voiceImg];
+            _voiceImg.hidden = YES;
+            
+        }
+        else
+        {
+        
+        }
+        
+        
+        
+        
+        
+        
         
         
     }
@@ -51,53 +96,126 @@
 }
 
 - (void)configCellWithModel:(ChatModel *)model{
+    
+    
+    switch (model.msgType) {
+        case MessageTypeRichText:
+        {
+            if (model.chatCellOwner == ChatCellOwnerMe) {
+                
+                //设置头像frame
+                _iconBtn.frame = CGRectMake(ScreenWidth-40-Padding, OffsetY, 40, 40);
+                [_iconBtn sd_setImageWithURL:[NSURL URLWithString:model.iconUrl] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@""]];
+                
+                //设置气泡frame
+                CGSize labelSize = model.messageLabelSize;
+                if (model.isSingleLine) {
+                    _bgImgView.frame = CGRectMake(ScreenWidth-Padding-40-(labelSize.width+40), MessageBgTopOffset, labelSize.width+40, 45);
+                }else{
+                    _bgImgView.frame = CGRectMake(ScreenWidth-Padding-40- (labelSize.width+40), MessageBgTopOffset, labelSize.width+40, labelSize.height+27);
+                }
+                //气泡拉伸，设置图片
+                UIImage *img = [UIImage imageNamed:@"chat_dialog_me_male"];
+                img = [img resizableImageWithCapInsets:(UIEdgeInsetsMake(img.size.height * 0.8, img.size.width * 0.5, img.size.height * 0.2, img.size.width * 0.5))];
+                _bgImgView.image = img;
+                
+                //设置消息文本frame
+                _messageLabel.frame = CGRectMake(ScreenWidth- Padding-40-20- 3 -labelSize.width, MessageTopOffset, labelSize.width, labelSize.height);
+                _messageLabel.attributedText = model.message;
+                
+                
+            }else{
+                
+                //设置头像frame
+                _iconBtn.frame = CGRectMake(Padding, OffsetY, 40, 40);
+                [_iconBtn sd_setImageWithURL:[NSURL URLWithString:model.iconUrl] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@""]];
+                
+                //设置气泡frame
+                CGSize labelSize = model.messageLabelSize;
+                if (model.isSingleLine) {
+                    _bgImgView.frame = CGRectMake(Padding+40, MessageBgTopOffset, labelSize.width+40, 45);
+                }else{
+                    _bgImgView.frame = CGRectMake(Padding+40, MessageBgTopOffset, labelSize.width+40, labelSize.height+27);
+                }
+                
+                //气泡拉伸，设置图片
+                UIImage *img = [UIImage imageNamed:@"chat_dialog_others"];
+                img = [img resizableImageWithCapInsets:(UIEdgeInsetsMake(img.size.height*0.8,img.size.width*0.5,img.size.height*0.2,img.size.width*0.5))];
+                _bgImgView.image = img;
+                
+                //设置消息文本frame
+                _messageLabel.frame = CGRectMake(Padding+40+20+3 , MessageTopOffset, labelSize.width, labelSize.height);
+                _messageLabel.attributedText = model.message;
+            }
+            
+        }
+            break;
+        case MessageTypePhoto:
+        {
 
-    if (model.chatCellOwner == ChatCellOwnerMe) {
-        
-        //设置头像frame
-        _iconBtn.frame = CGRectMake(ScreenWidth-40-Padding, OffsetY, 40, 40);
-        [_iconBtn sd_setImageWithURL:[NSURL URLWithString:model.iconUrl] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@""]];
-        
-        //设置气泡frame
-        CGSize labelSize = model.messageLabelSize;
-        if (model.isSingleLine) {
-            _bgImgView.frame = CGRectMake(ScreenWidth-Padding-40-(labelSize.width+40), MessageBgTopOffset, labelSize.width+40, 45);
-        }else{
-            _bgImgView.frame = CGRectMake(ScreenWidth-Padding-40- (labelSize.width+40), MessageBgTopOffset, labelSize.width+40, labelSize.height+27);
+            
+            if (model.chatCellOwner == ChatCellOwnerMe) {
+                //设置头像frame
+                _iconBtn.frame = CGRectMake(ScreenWidth-40-Padding, OffsetY, 40, 40);
+                [_iconBtn sd_setImageWithURL:[NSURL URLWithString:model.iconUrl] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@""]];
+                
+                if (_photoMsgBtn.subLayer) {
+                    [_photoMsgBtn.subLayer.mask removeFromSuperlayer];
+                    _photoMsgBtn.subLayer.mask = nil;
+                    [_photoMsgBtn.subLayer removeFromSuperlayer];
+                    _photoMsgBtn.subLayer = nil;
+                }
+                
+                UIImage *shapeImg = [UIImage imageNamed:@"chat_dialog_me_male"];
+                UIImage *subImg = [UIImage imageNamed:@"启动页-iphone6"];
+                CGFloat w = subImg.size.width;
+                CGFloat h = subImg.size.height;
+                _photoMsgBtn.frame = CGRectMake(ScreenWidth - Padding - 40 - 100, OffsetY, 100, 100 * h/w);
+                [_photoMsgBtn configWithShapeLayerContentImage:shapeImg subLayerContentImage:subImg];
+                
+                
+            }else{
+                //设置头像frame
+                _iconBtn.frame = CGRectMake(Padding, OffsetY, 40, 40);
+                [_iconBtn sd_setImageWithURL:[NSURL URLWithString:model.iconUrl] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@""]];
+                
+                if (_photoMsgBtn.subLayer) {
+                    [_photoMsgBtn.subLayer.mask removeFromSuperlayer];
+                    _photoMsgBtn.subLayer.mask = nil;
+                    [_photoMsgBtn.subLayer removeFromSuperlayer];
+                    _photoMsgBtn.subLayer = nil;
+                }
+                
+                UIImage *shapeImg = [UIImage imageNamed:@"chat_dialog_others"];
+                UIImage *subImg = [UIImage imageNamed:@"meinv"];
+                CGFloat w = subImg.size.width;
+                CGFloat h = subImg.size.height;
+                _photoMsgBtn.frame = CGRectMake(Padding + 40 , OffsetY, 180, 180 * h/w);
+                [_photoMsgBtn configWithShapeLayerContentImage:shapeImg subLayerContentImage:subImg];
+            
+            }
+            
+            
+            
+            
         }
-        //气泡拉伸，设置图片
-        UIImage *img = [UIImage imageNamed:@"chat_dialog_me_male"];
-        img = [img resizableImageWithCapInsets:(UIEdgeInsetsMake(img.size.height * 0.8, img.size.width * 0.5, img.size.height * 0.2, img.size.width * 0.5))];
-        _bgImgView.image = img;
-        
-        //设置消息文本frame
-        _messageLabel.frame = CGRectMake(ScreenWidth- Padding-40-20- 3 -labelSize.width, MessageTopOffset, labelSize.width, labelSize.height);
-        _messageLabel.attributedText = model.message;
-        
-        
-    }else{
-        
-        //设置头像frame
-        _iconBtn.frame = CGRectMake(Padding, OffsetY, 40, 40);
-        [_iconBtn sd_setImageWithURL:[NSURL URLWithString:model.iconUrl] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@""]];
-        
-        //设置气泡frame
-        CGSize labelSize = model.messageLabelSize;
-        if (model.isSingleLine) {
-            _bgImgView.frame = CGRectMake(Padding+40, MessageBgTopOffset, labelSize.width+40, 45);
-        }else{
-            _bgImgView.frame = CGRectMake(Padding+40, MessageBgTopOffset, labelSize.width+40, labelSize.height+27);
+            break;
+        case MessageTypeEmotionImage:
+        {
+            
         }
-        
-        //气泡拉伸，设置图片
-        UIImage *img = [UIImage imageNamed:@"chat_dialog_others"];
-        img = [img resizableImageWithCapInsets:(UIEdgeInsetsMake(img.size.height*0.8,img.size.width*0.5,img.size.height*0.2,img.size.width*0.5))];
-        _bgImgView.image = img;
-        
-        //设置消息文本frame
-        _messageLabel.frame = CGRectMake(Padding+40+20+3 , MessageTopOffset, labelSize.width, labelSize.height);
-        _messageLabel.attributedText = model.message;
+            break;
+        case MessageTypeVoice:
+        {
+            
+        }
+            break;
+            
+        default:
+            break;
     }
+
+    
 
 }
 

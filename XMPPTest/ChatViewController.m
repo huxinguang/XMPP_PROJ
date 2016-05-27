@@ -16,6 +16,10 @@
 #import "ChatTextAttachment.h"
 #import <AVFoundation/AVFoundation.h>
 
+
+#import "TZImagePickerController.h"
+#import "UIView+Layout.h"
+
 #define  MessageFont [UIFont systemFontOfSize:15]
 #define  MessageMaxWidth (ScreenWidth - 10*6 - 40*2)
 #define  MessageBgTopOffset 6
@@ -47,7 +51,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 };
 
 
-@interface ChatViewController ()<UITableViewDataSource,UITableViewDelegate,XMPPStreamDelegate,NSFetchedResultsControllerDelegate,ZBMessageInputViewDelegate,ZBMessageShareMenuViewDelegate,ZBMessageManagerFaceViewDelegate>{
+@interface ChatViewController ()<UITableViewDataSource,UITableViewDelegate,XMPPStreamDelegate,NSFetchedResultsControllerDelegate,ZBMessageInputViewDelegate,ZBMessageShareMenuViewDelegate,ZBMessageManagerFaceViewDelegate,TZImagePickerControllerDelegate>{
     
     CurrentKeyboard currentKeyboard;
     double animationDuration;
@@ -158,6 +162,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     self.chatTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-InputViewHeight) style:UITableViewStylePlain];
     self.chatTableView.dataSource = self;
     self.chatTableView.delegate = self;
+    self.chatTableView.backgroundColor = Color(235, 235, 235);
     [self.view addSubview:self.chatTableView];
     
     self.messageToolView = [[ZBMessageInputView alloc]initWithFrame:CGRectMake(0, ScreenHeight - InputViewHeight,ScreenWidth,InputViewHeight)];
@@ -377,6 +382,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             
             for (int i = 0; i < fetchedArray.count; i++) {
                 ChatModel *model = [[ChatModel alloc]init];
+                model.msgType = MessageTypeRichText;
+                
                 XMPPMessageArchiving_Message_CoreDataObject *message = fetchedArray[i];
                 
                 if (message.body) {
@@ -423,8 +430,39 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             }
             
             
+            //+++++++++++++++++++++++++++++++++++++++++
+            
+            for (int j = 0; j < 50; j++) {
+                ChatModel *model = [[ChatModel alloc]init];
+                model.msgType = MessageTypePhoto;
+                if (j%2 == 0) {
+                    model.chatCellOwner = ChatCellOwnerMe;
+                    model.iconUrl = @"http://img.zcool.cn/community/01c552565bffbc6ac7253403a6ad11.jpg";
+                    UIImage *cImg = [UIImage imageNamed:@"启动页-iphone6"];
+                    CGFloat w = cImg.size.width;
+                    CGFloat h = cImg.size.height;
+                    model.cellHeight = 8 + 100 * h/w +8;
+                }else{
+                    model.chatCellOwner = ChatCellOwnerOther;
+                    model.iconUrl = @"http://imgsrc.baidu.com/forum/w%3D580/sign=2902b5fed662853592e0d229a0ee76f2/7b01722309f790522a7088320ff3d7ca7acbd5f1.jpg";
+                    UIImage *cImg = [UIImage imageNamed:@"meinv"];
+                    CGFloat w = cImg.size.width;
+                    CGFloat h = cImg.size.height;
+                    model.cellHeight = 8 + 180 * h/w +8;
+                }
+                
+                
+                [_dataArr addObject:model];
+            }
+            
+            //+++++++++++++++++++++++++++++++++++++++++
+            
+            
+            
+            
             
             [_chatTableView reloadData];
+            
             if (_dataArr.count > 0) {
                 if (_chatTableView.contentSize.height >= _chatTableView.frame.size.height) {
                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:_dataArr.count-1 inSection:0];
@@ -529,13 +567,58 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    static NSString *cellIdentifier = @"CellIdentifier";
-    ChatTextCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (cell == nil) {
-        cell = [[ChatTextCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+    
+    static NSString *richTextCellIdentifier = @"RichTextCellIdentifier";
+    static NSString *photoCellIdentifier = @"PhotoCellIdentifier";
+    static NSString *emotionImageCellIdentifier = @"EmotionImageCellIdentifier";
+    static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
+    
+    ChatModel *model = [_dataArr objectAtIndex:indexPath.row];
+    ChatTextCell *cell = nil;
+    
+    switch (model.msgType) {
+        case MessageTypeRichText:
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:richTextCellIdentifier];
+            if (cell == nil) {
+                cell = [[ChatTextCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:richTextCellIdentifier];
+            }
+        }
+            break;
+        case MessageTypePhoto:
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:photoCellIdentifier];
+            if (cell == nil) {
+                cell = [[ChatTextCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:photoCellIdentifier];
+            }
+            cell.photoMsgBtn.tag = indexPath.row;
+            [cell.photoMsgBtn addTarget:self action:@selector(photoClickAction:) forControlEvents:UIControlEventTouchUpInside];
+            
+            
+        }
+            break;
+        case MessageTypeEmotionImage:
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:emotionImageCellIdentifier];
+            if (cell == nil) {
+                cell = [[ChatTextCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:emotionImageCellIdentifier];
+            }
+        }
+            break;
+        case MessageTypeVoice:
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:voiceCellIdentifier];
+            if (cell == nil) {
+                cell = [[ChatTextCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:voiceCellIdentifier];
+            }
+        }
+            break;
+            
+        default:
+            break;
     }
     
-    [cell configCellWithModel:[_dataArr objectAtIndex:indexPath.row]];
+    [cell configCellWithModel:model];
     cell.iconBtn.tag = indexPath.row;
     [cell.iconBtn addTarget:self action:@selector(cellIconClickAction:) forControlEvents:UIControlEventTouchUpInside];
     return cell;
@@ -566,6 +649,11 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 - (void)cellIconClickAction:(UIButton *)btn{
 
     NSLog(@"点击第%d行的头像",(int)btn.tag);
+}
+
+- (void)photoClickAction:(ShapedPhotoButtton *)btn{
+
+    NSLog(@"点击了第%d行的照片",(int)btn.tag);
 }
 
 
@@ -808,6 +896,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     switch (index) {
         case 0:
             NSLog(@"照片");
+            [self pickPhoto];
             break;
         case 1:
             NSLog(@"拍摄");
@@ -1044,6 +1133,41 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     }
     
 }
+
+
+- (void)pickPhoto{
+    TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:9 delegate:self];
+    // 你可以通过block或者代理，来得到用户选择的照片.
+    [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets) {
+        
+    }];
+    [self presentViewController:imagePickerVc animated:YES completion:nil];
+}
+
+#pragma mark TZImagePickerControllerDelegate
+
+/// User click cancel button
+/// 用户点击了取消
+- (void)imagePickerControllerDidCancel:(TZImagePickerController *)picker {
+    NSLog(@"cancel");
+}
+
+/// User finish picking photo，if assets are not empty, user picking original photo.
+/// 用户选择好了图片，如果assets非空，则用户选择了原图。
+- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingPhotos:(NSArray *)photos sourceAssets:(NSArray *)assets{
+
+}
+
+/// User finish picking video,
+/// 用户选择好了视频
+- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingVideo:(UIImage *)coverImage sourceAssets:(id)asset {
+
+}
+
+
+
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
