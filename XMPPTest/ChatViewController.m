@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 };
 
 
-@interface ChatViewController ()<UITableViewDataSource,UITableViewDelegate,XMPPStreamDelegate,NSFetchedResultsControllerDelegate,ZBMessageInputViewDelegate,ZBMessageShareMenuViewDelegate,ZBMessageManagerFaceViewDelegate,TZImagePickerControllerDelegate>{
+@interface ChatViewController ()<UITableViewDataSource,UITableViewDelegate,XMPPStreamDelegate,NSFetchedResultsControllerDelegate,ZBMessageInputViewDelegate,ZBMessageShareMenuViewDelegate,ZBMessageManagerFaceViewDelegate,TZImagePickerControllerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>{
     
     CurrentKeyboard currentKeyboard;
     double animationDuration;
@@ -654,6 +654,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 - (void)photoClickAction:(ShapedPhotoButtton *)btn{
 
     NSLog(@"点击了第%d行的照片",(int)btn.tag);
+    [self hideKeyboard];
 }
 
 
@@ -866,10 +867,11 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 
 - (void)scroChatTableViewToBottom{
+    if (_dataArr.count > 0) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow: _dataArr.count-1 inSection:0];
+        [_chatTableView scrollToRowAtIndexPath: indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    }
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow: _dataArr.count-1 inSection:0];
-    [_chatTableView scrollToRowAtIndexPath: indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-
 }
 
 
@@ -900,6 +902,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             break;
         case 1:
             NSLog(@"拍摄");
+            [self openCamera];
             break;
         case 2:
             NSLog(@"位置");
@@ -1146,25 +1149,52 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 #pragma mark TZImagePickerControllerDelegate
 
-/// User click cancel button
 /// 用户点击了取消
-- (void)imagePickerControllerDidCancel:(TZImagePickerController *)picker {
+- (void)tzImagePickerControllerDidCancel:(TZImagePickerController *)picker {
     NSLog(@"cancel");
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-/// User finish picking photo，if assets are not empty, user picking original photo.
 /// 用户选择好了图片，如果assets非空，则用户选择了原图。
-- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingPhotos:(NSArray *)photos sourceAssets:(NSArray *)assets{
+- (void)tzImagePickerController:(TZImagePickerController *)picker didFinishPickingPhotos:(NSArray *)photos sourceAssets:(NSArray *)assets{
 
 }
 
-/// User finish picking video,
 /// 用户选择好了视频
-- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingVideo:(UIImage *)coverImage sourceAssets:(id)asset {
+- (void)tzImagePickerController:(TZImagePickerController *)picker didFinishPickingVideo:(UIImage *)coverImage sourceAssets:(id)asset {
 
 }
 
 
+
+- (void)openCamera{
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    picker.delegate = self;
+    if (IsIOS7) {
+        picker.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
+    }
+    // 设置导航默认标题的颜色及字体大小
+    picker.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
+                                                 NSFontAttributeName : [UIFont boldSystemFontOfSize:18]};
+    [self presentViewController:picker animated:YES completion:nil];
+    
+
+}
+
+
+#pragma mark - UIImagePickerControllerDelegate
+// 选择了图片或者拍照了
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+
+    return;
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
 
 
 

@@ -16,7 +16,7 @@
     _shapeLayer.fillColor = [UIColor blackColor].CGColor;
     _shapeLayer.strokeColor = [UIColor clearColor].CGColor;
     _shapeLayer.frame = self.bounds;
-    _shapeLayer.contentsCenter = CGRectMake(0.5, 0.75, 0.1, 0.1);//注意CALayer的contentsCenter属性的单位是比例（而不是绝对坐标）
+    _shapeLayer.contentsCenter = CGRectMake(0.5, 0.75, 0.1, 0.1);//注意CALayer的contentsCenter属性的单位是比例（而不是绝对坐标）,https://www.mgenware.com/blog/?p=489
     _shapeLayer.contentsScale = [UIScreen mainScreen].scale;  //非常关键设置自动拉伸的效果且不变形
     _shapeLayer.contents = (id)shapeImg.CGImage;
     

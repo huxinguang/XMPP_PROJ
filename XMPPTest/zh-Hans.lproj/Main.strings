@@ -1,0 +1,21 @@
+
+/* Class = "UIButton"; normalTitle = "登录"; ObjectID = "2U1-vV-7JI"; */
+"2U1-vV-7JI.normalTitle" = "登录";
+
+/* Class = "UITextField"; placeholder = "密码"; ObjectID = "2rp-un-e3E"; */
+"2rp-un-e3E.placeholder" = "密码";
+
+/* Class = "UITextField"; placeholder = "用户名"; ObjectID = "9Pq-dy-ppV"; */
+"9Pq-dy-ppV.placeholder" = "用户名";
+
+/* Class = "UITextField"; placeholder = "用户名"; ObjectID = "J4H-fg-cIl"; */
+"J4H-fg-cIl.placeholder" = "用户名";
+
+/* Class = "UIButton"; normalTitle = "注册"; ObjectID = "dAh-do-g5b"; */
+"dAh-do-g5b.normalTitle" = "注册";
+
+/* Class = "UITextField"; placeholder = "密码"; ObjectID = "eJq-g7-yyW"; */
+"eJq-g7-yyW.placeholder" = "密码";
+
+/* Class = "UIButton"; normalTitle = "注册"; ObjectID = "rCl-1g-BYP"; */
+"rCl-1g-BYP.normalTitle" = "注册";

@@ -190,8 +190,8 @@
 - (void)cancel {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     TZImagePickerController *imagePickerVc = (TZImagePickerController *)self.navigationController;
-    if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(imagePickerControllerDidCancel:)]) {
-        [imagePickerVc.pickerDelegate imagePickerControllerDidCancel:imagePickerVc];
+    if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(tzImagePickerControllerDidCancel:)]) {
+        [imagePickerVc.pickerDelegate tzImagePickerControllerDidCancel:imagePickerVc];
     }
     if (imagePickerVc.imagePickerControllerDidCancelHandle) {
         imagePickerVc.imagePickerControllerDidCancelHandle();

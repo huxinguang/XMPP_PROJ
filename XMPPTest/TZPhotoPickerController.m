@@ -165,8 +165,8 @@
 - (void)cancel {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     TZImagePickerController *imagePickerVc = (TZImagePickerController *)self.navigationController;
-    if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(imagePickerControllerDidCancel:)]) {
-        [imagePickerVc.pickerDelegate imagePickerControllerDidCancel:imagePickerVc];
+    if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(tzImagePickerControllerDidCancel:)]) {
+        [imagePickerVc.pickerDelegate tzImagePickerControllerDidCancel:imagePickerVc];
     }
     if (imagePickerVc.imagePickerControllerDidCancelHandle) {
         imagePickerVc.imagePickerControllerDidCancelHandle();
@@ -201,11 +201,11 @@
             if (_isSelectOriginalPhoto) [assets addObject:model.asset];
             if (photos.count < _selectedPhotoArr.count) return;
             
-            if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingPhotos:sourceAssets:)]) {
-                [imagePickerVc.pickerDelegate imagePickerController:imagePickerVc didFinishPickingPhotos:photos sourceAssets:assets];
+            if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(tzImagePickerController:didFinishPickingPhotos:sourceAssets:)]) {
+                [imagePickerVc.pickerDelegate tzImagePickerController:imagePickerVc didFinishPickingPhotos:photos sourceAssets:assets];
             }
-            if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingPhotos:sourceAssets:infos:)]) {
-                [imagePickerVc.pickerDelegate imagePickerController:imagePickerVc didFinishPickingPhotos:photos sourceAssets:assets infos:infoArr];
+            if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(tzImagePickerController:didFinishPickingPhotos:sourceAssets:infos:)]) {
+                [imagePickerVc.pickerDelegate tzImagePickerController:imagePickerVc didFinishPickingPhotos:photos sourceAssets:assets infos:infoArr];
             }
             if (imagePickerVc.didFinishPickingPhotosHandle) {
                 imagePickerVc.didFinishPickingPhotosHandle(photos,assets);

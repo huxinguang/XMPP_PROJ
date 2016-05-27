@@ -110,8 +110,8 @@
 
 - (void)okButtonClick {
     TZImagePickerController *imagePickerVc = (TZImagePickerController *)self.navigationController;
-    if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingVideo:sourceAssets:)]) {
-        [imagePickerVc.pickerDelegate imagePickerController:imagePickerVc didFinishPickingVideo:_cover sourceAssets:_model.asset];
+    if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(tzImagePickerController:didFinishPickingVideo:sourceAssets:)]) {
+        [imagePickerVc.pickerDelegate tzImagePickerController:imagePickerVc didFinishPickingVideo:_cover sourceAssets:_model.asset];
     }
     if (imagePickerVc.didFinishPickingVideoHandle) {
         imagePickerVc.didFinishPickingVideoHandle(_cover,_model.asset);
