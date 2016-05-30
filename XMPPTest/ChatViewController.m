@@ -381,12 +381,40 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             [_dataArr removeAllObjects];
             
             for (int i = 0; i < fetchedArray.count; i++) {
-                ChatModel *model = [[ChatModel alloc]init];
-                model.msgType = MessageTypeRichText;
                 
                 XMPPMessageArchiving_Message_CoreDataObject *message = fetchedArray[i];
                 
-                if (message.body) {
+                ChatModel *model = [[ChatModel alloc]init];
+                
+                if ([message.body isEqualToString:@"image"]){
+                    
+                    XMPPMessage *msg = message.message;
+                    for (XMPPElement *node in msg.children) {
+                        if ([node.name isEqualToString:@"attachment"]) {
+                            // 取出消息的解码
+                            NSString *base64str = node.stringValue;
+                            NSData *data = [[NSData alloc]initWithBase64EncodedString:base64str options:0];
+                            UIImage *image = [[UIImage alloc]initWithData:data];
+                            model.photo = image;
+                            model.msgType = MessageTypePhoto;
+                            if (message.isOutgoing) {
+                                model.chatCellOwner = ChatCellOwnerMe;
+                                model.iconUrl = @"http://img.zcool.cn/community/01c552565bffbc6ac7253403a6ad11.jpg";
+                            }else{
+                                model.chatCellOwner = ChatCellOwnerOther;
+                                model.iconUrl = @"http://imgsrc.baidu.com/forum/w%3D580/sign=2902b5fed662853592e0d229a0ee76f2/7b01722309f790522a7088320ff3d7ca7acbd5f1.jpg";
+                            }
+                            //缓存高度
+                            model.cellHeight = 8 + 150 +8;//图片设定为定高(150)，宽度根据高度而定
+                            [_dataArr addObject:model];
+                        }
+                    
+                    }
+                    
+                    
+                }else if (message.body && ![message.body isEqualToString:@"image"]) {
+                    
+                    model.msgType = MessageTypeRichText;
                     
                     model.message = [[NSMutableAttributedString alloc]initWithString:message.body];
                     if (message.isOutgoing) {
@@ -414,53 +442,21 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                         model.messageLabelSize = CGSizeMake(labelW, labelH);
                         model.isSingleLine = YES;
                     }
+                    
+                    //缓存高度
+                    CGFloat cellHeight = MessageTopOffset + model.messageLabelSize.height + MessageBottomOffset + MessageBgBottomOffset;
+                    if (cellHeight < MessageBgTopOffset+45+MessageBgBottomOffset) {
+                        cellHeight = MessageBgTopOffset+45+MessageBgBottomOffset;
+                    }
+                    model.cellHeight = cellHeight;
+                    
+                    
                     [_dataArr addObject:model];
                 }
                 
             }
             
-            //缓存cell高度
-            for (int j = 0; j < _dataArr.count; j++) {
-                ChatModel *model = [_dataArr objectAtIndex:j];
-                CGFloat cellHeight = MessageTopOffset + model.messageLabelSize.height + MessageBottomOffset + MessageBgBottomOffset;
-                if (cellHeight < MessageBgTopOffset+45+MessageBgBottomOffset) {
-                    cellHeight = MessageBgTopOffset+45+MessageBgBottomOffset;
-                }
-                model.cellHeight = cellHeight;
-            }
-            
-            
-            //+++++++++++++++++++++++++++++++++++++++++
-            
-            for (int j = 0; j < 50; j++) {
-                ChatModel *model = [[ChatModel alloc]init];
-                model.msgType = MessageTypePhoto;
-                if (j%2 == 0) {
-                    model.chatCellOwner = ChatCellOwnerMe;
-                    model.iconUrl = @"http://img.zcool.cn/community/01c552565bffbc6ac7253403a6ad11.jpg";
-                    UIImage *cImg = [UIImage imageNamed:@"启动页-iphone6"];
-                    CGFloat w = cImg.size.width;
-                    CGFloat h = cImg.size.height;
-                    model.cellHeight = 8 + 100 * h/w +8;
-                }else{
-                    model.chatCellOwner = ChatCellOwnerOther;
-                    model.iconUrl = @"http://imgsrc.baidu.com/forum/w%3D580/sign=2902b5fed662853592e0d229a0ee76f2/7b01722309f790522a7088320ff3d7ca7acbd5f1.jpg";
-                    UIImage *cImg = [UIImage imageNamed:@"meinv"];
-                    CGFloat w = cImg.size.width;
-                    CGFloat h = cImg.size.height;
-                    model.cellHeight = 8 + 180 * h/w +8;
-                }
-                
-                
-                [_dataArr addObject:model];
-            }
-            
-            //+++++++++++++++++++++++++++++++++++++++++
-            
-            
-            
-            
-            
+ 
             [_chatTableView reloadData];
             
             if (_dataArr.count > 0) {
@@ -1157,6 +1153,17 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 /// 用户选择好了图片，如果assets非空，则用户选择了原图。
 - (void)tzImagePickerController:(TZImagePickerController *)picker didFinishPickingPhotos:(NSArray *)photos sourceAssets:(NSArray *)assets{
+    
+    
+    for (int i = 0; i < photos.count ; i ++) {
+        UIImage *image = photos[i];
+        
+        NSData *data = UIImagePNGRepresentation(image);
+        
+        [self sendMessageWithData:data bodyName:@"image"];
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 
 }
 
@@ -1197,7 +1204,24 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 }
 
 
-
+- (void)sendMessageWithData:(NSData *)data bodyName:(NSString *)name
+{
+    XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.friendJID];
+    
+    [message addBody:name];
+    
+    // 转换成base64的编码
+    NSString *base64str = [data base64EncodedStringWithOptions:0];
+    
+    // 设置节点内容
+    XMPPElement *attachment = [XMPPElement elementWithName:@"attachment" stringValue:base64str];
+    
+    // 包含子节点
+    [message addChild:attachment];
+    
+    // 发送消息
+    [[XMPPManager shareManager].xmppStream sendElement:message];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

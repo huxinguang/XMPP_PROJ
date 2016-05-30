@@ -167,10 +167,10 @@ static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
                 }
                 
                 UIImage *shapeImg = [UIImage imageNamed:@"chat_dialog_me_male"];
-                UIImage *subImg = [UIImage imageNamed:@"启动页-iphone6"];
+                UIImage *subImg = model.photo;
                 CGFloat w = subImg.size.width;
                 CGFloat h = subImg.size.height;
-                _photoMsgBtn.frame = CGRectMake(ScreenWidth - Padding - 40 - 100, OffsetY, 100, 100 * h/w);
+                _photoMsgBtn.frame = CGRectMake(ScreenWidth - Padding - 40 - 150*w/h, OffsetY, 150*w/h, 150);
                 [_photoMsgBtn configWithShapeLayerContentImage:shapeImg subLayerContentImage:subImg];
                 
                 
@@ -187,10 +187,10 @@ static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
                 }
                 
                 UIImage *shapeImg = [UIImage imageNamed:@"chat_dialog_others"];
-                UIImage *subImg = [UIImage imageNamed:@"meinv"];
+                UIImage *subImg = model.photo;
                 CGFloat w = subImg.size.width;
                 CGFloat h = subImg.size.height;
-                _photoMsgBtn.frame = CGRectMake(Padding + 40 , OffsetY, 180, 180 * h/w);
+                _photoMsgBtn.frame = CGRectMake(Padding + 40 , OffsetY, 150*w/h, 150);
                 [_photoMsgBtn configWithShapeLayerContentImage:shapeImg subLayerContentImage:subImg];
             
             }

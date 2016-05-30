@@ -33,7 +33,7 @@ typedef NS_ENUM(NSInteger,MessageType) {
 @property (nonatomic ,assign)BOOL isSingleLine;
 @property (nonatomic ,assign)CGFloat messageMinHeight;
 //Photo
-
+@property (nonatomic ,strong)UIImage *photo;
 
 
 
