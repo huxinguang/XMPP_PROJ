@@ -1327,6 +1327,7 @@
 			baseConfigurationReference = B6EC50986B3A0411F5F54048 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "iPhone Developer: hua huang (829TJVFPJM)";
 				GCC_PREFIX_HEADER = "$(SRCROOT)/XMPPTest/XMPPTestConfig.pch";
@@ -1344,6 +1345,7 @@
 			baseConfigurationReference = 99DB3F3E918957801499C1BE /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LIBRARY = "libc++";
 				GCC_PREFIX_HEADER = "$(SRCROOT)/XMPPTest/XMPPTestConfig.pch";
 				INFOPLIST_FILE = XMPPTest/Info.plist;

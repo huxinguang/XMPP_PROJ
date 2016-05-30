@@ -35,6 +35,11 @@ typedef NS_ENUM(NSInteger,MessageType) {
 //Photo
 @property (nonatomic ,strong)UIImage *photo;
 
+@property (nonatomic ,strong)NSData *data;
+@property (nonatomic ,assign)int timeLength;
+
+
+
 
 
 

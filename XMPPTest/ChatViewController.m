@@ -412,7 +412,23 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                     }
                     
                     
-                }else if (message.body && ![message.body isEqualToString:@"image"]) {
+                }
+                else if ([message.body hasPrefix:@"audio"]){
+                    model.msgType = MessageTypeVoice;
+                    XMPPMessage *msg = message.message;
+                    for (XMPPElement *node in msg.children) {
+                        if ([node.name isEqualToString:@"attachment"]){
+                            NSString *base64str = node.stringValue;
+                            NSData *data = [[NSData alloc]initWithBase64EncodedString:base64str options:0];
+                            model.data = data;
+                            NSString *timeStr = [message.body substringFromIndex:6];
+                            
+                        }
+                        
+                    }
+                
+                }
+                else if (message.body && ![message.body isEqualToString:@"image"]) {
                     
                     model.msgType = MessageTypeRichText;
                     
@@ -624,11 +640,6 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     ChatModel *model = [_dataArr objectAtIndex:indexPath.row];
-//    CGFloat cellHeight = MessageTopOffset + model.messageLabelSize.height + MessageBottomOffset + MessageBgBottomOffset;
-//    if (cellHeight < MessageBgTopOffset+45+MessageBgBottomOffset) {
-//        cellHeight = MessageBgTopOffset+45+MessageBgBottomOffset;
-//    }
-//    return cellHeight;
     return model.cellHeight;
 }
 
@@ -651,6 +662,36 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
     NSLog(@"点击了第%d行的照片",(int)btn.tag);
     [self hideKeyboard];
+    
+//    NSMutableArray *modelArr = [[NSMutableArray alloc]init];
+//    for (int i = 0; i < _dataArr.count; i++) {
+//        ChatModel *model = [_dataArr objectAtIndex:i];
+//        if (model.msgType == MessageTypePhoto) {
+//            [modelArr addObject:model];
+//        }
+//    }
+//    
+//    UIScrollView *photoScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+//    photoScrollView.contentSize = CGSizeMake(modelArr.count*ScreenWidth, ScreenHeight);
+//    [[UIApplication sharedApplication].keyWindow addSubview:photoScrollView];
+//    
+//    for (int i = 0; i < modelArr.count; i++) {
+//        ChatModel *model = [modelArr objectAtIndex:i];
+//        CGFloat w = model.photo.size.width;
+//        CGFloat h = model.photo.size.height;
+//        UIImageView *imgView = [[UIImageView alloc]initWithFrame:CGRectMake(ScreenWidth*i, ScreenHeight/2-(ScreenWidth * h/w)/2, ScreenWidth, ScreenWidth * h/w)];
+//        photoScrollView addSubview:<#(nonnull UIView *)#>
+//    }
+//    
+//    
+//    
+//    for (ChatModel *item in modelArr) {
+//        if ([_dataArr objectAtIndex:btn.tag] == item) {
+//            int currentIndex = (int)[modelArr indexOfObject:item];
+//            [photoScrollView setContentOffset:CGPointMake(ScreenWidth*currentIndex, 0) animated:NO];
+//        }
+//    }
+    
 }
 
 
@@ -996,6 +1037,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 // 松开手指完成录音
 - (void)didFinishRecoingVoiceAction{
+    NSTimeInterval time = recorder.currentTime;
+    NSLog(@"录音时长:%f",time);
     [recorder stop];
     recorder = nil;
     [timer invalidate];
@@ -1003,12 +1046,12 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
     [voiceAnimationView removeFromSuperview];
     voiceAnimationView = nil;
-    NSLog(@"录音完成");
     
+    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:playName]];
+    [self sendMessageWithData:data bodyName:[NSString stringWithFormat:@"audio:%.1f", time]];
     
     
     NSError *playerError;
-    
     //播放
     player = nil;
     player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:playName] error:&playerError];
@@ -1154,15 +1197,11 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 /// 用户选择好了图片，如果assets非空，则用户选择了原图。
 - (void)tzImagePickerController:(TZImagePickerController *)picker didFinishPickingPhotos:(NSArray *)photos sourceAssets:(NSArray *)assets{
     
-    
     for (int i = 0; i < photos.count ; i ++) {
         UIImage *image = photos[i];
-        
         NSData *data = UIImagePNGRepresentation(image);
-        
         [self sendMessageWithData:data bodyName:@"image"];
     }
-    
     [self dismissViewControllerAnimated:YES completion:nil];
 
 }
@@ -1192,11 +1231,11 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 
 #pragma mark - UIImagePickerControllerDelegate
-// 选择了图片或者拍照了
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
+    UIImage *image = info[UIImagePickerControllerOriginalImage];
+    NSData *data = UIImagePNGRepresentation(image);
+    [self sendMessageWithData:data bodyName:@"image"];
     [picker dismissViewControllerAnimated:YES completion:nil];
-
-    return;
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
@@ -1207,18 +1246,13 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 - (void)sendMessageWithData:(NSData *)data bodyName:(NSString *)name
 {
     XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.friendJID];
-    
     [message addBody:name];
-    
     // 转换成base64的编码
     NSString *base64str = [data base64EncodedStringWithOptions:0];
-    
     // 设置节点内容
     XMPPElement *attachment = [XMPPElement elementWithName:@"attachment" stringValue:base64str];
-    
     // 包含子节点
     [message addChild:attachment];
-    
     // 发送消息
     [[XMPPManager shareManager].xmppStream sendElement:message];
 }
