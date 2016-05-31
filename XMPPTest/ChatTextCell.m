@@ -56,8 +56,9 @@ static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
             _iconBtn = [UIButton buttonWithType:UIButtonTypeCustom];
             [self.contentView addSubview:_iconBtn];
             
-            _photoMsgBtn = [[ShapedPhotoButtton alloc]init];
-            [self.contentView addSubview:_photoMsgBtn];
+            _photoMsgView = [[ShapedPhotoView alloc]init];
+            _photoMsgView.userInteractionEnabled = YES;
+            [self.contentView addSubview:_photoMsgView];
         
         }
         else if ([reuseIdentifier isEqualToString:@"EmotionImageCellIdentifier"])
@@ -157,19 +158,19 @@ static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
                 _iconBtn.frame = CGRectMake(ScreenWidth-40-Padding, OffsetY, 40, 40);
                 [_iconBtn sd_setImageWithURL:[NSURL URLWithString:model.iconUrl] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@""]];
                 
-                if (_photoMsgBtn.subLayer) {
-                    [_photoMsgBtn.subLayer.mask removeFromSuperlayer];
-                    _photoMsgBtn.subLayer.mask = nil;
-                    [_photoMsgBtn.subLayer removeFromSuperlayer];
-                    _photoMsgBtn.subLayer = nil;
+                if (_photoMsgView.subLayer) {
+                    [_photoMsgView.subLayer.mask removeFromSuperlayer];
+                    _photoMsgView.subLayer.mask = nil;
+                    [_photoMsgView.subLayer removeFromSuperlayer];
+                    _photoMsgView.subLayer = nil;
                 }
                 
                 UIImage *shapeImg = [UIImage imageNamed:@"chat_dialog_me_male"];
                 UIImage *subImg = model.photo;
                 CGFloat w = subImg.size.width;
                 CGFloat h = subImg.size.height;
-                _photoMsgBtn.frame = CGRectMake(ScreenWidth - Padding - 40 - 150*w/h, OffsetY, 150*w/h, 150);
-                [_photoMsgBtn configWithShapeLayerContentImage:shapeImg subLayerContentImage:subImg];
+                _photoMsgView.frame = CGRectMake(ScreenWidth - Padding - 40 - 150*w/h, OffsetY, 150*w/h, 150);
+                [_photoMsgView configWithShapeLayerContentImage:shapeImg subLayerContentImage:subImg];
                 
                 
             }else{
@@ -177,19 +178,19 @@ static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
                 _iconBtn.frame = CGRectMake(Padding, OffsetY, 40, 40);
                 [_iconBtn sd_setImageWithURL:[NSURL URLWithString:model.iconUrl] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@""]];
                 
-                if (_photoMsgBtn.subLayer) {
-                    [_photoMsgBtn.subLayer.mask removeFromSuperlayer];
-                    _photoMsgBtn.subLayer.mask = nil;
-                    [_photoMsgBtn.subLayer removeFromSuperlayer];
-                    _photoMsgBtn.subLayer = nil;
+                if (_photoMsgView.subLayer) {
+                    [_photoMsgView.subLayer.mask removeFromSuperlayer];
+                    _photoMsgView.subLayer.mask = nil;
+                    [_photoMsgView.subLayer removeFromSuperlayer];
+                    _photoMsgView.subLayer = nil;
                 }
                 
                 UIImage *shapeImg = [UIImage imageNamed:@"chat_dialog_others"];
                 UIImage *subImg = model.photo;
                 CGFloat w = subImg.size.width;
                 CGFloat h = subImg.size.height;
-                _photoMsgBtn.frame = CGRectMake(Padding + 40 , OffsetY, 150*w/h, 150);
-                [_photoMsgBtn configWithShapeLayerContentImage:shapeImg subLayerContentImage:subImg];
+                _photoMsgView.frame = CGRectMake(Padding + 40 , OffsetY, 150*w/h, 150);
+                [_photoMsgView configWithShapeLayerContentImage:shapeImg subLayerContentImage:subImg];
             
             }
             

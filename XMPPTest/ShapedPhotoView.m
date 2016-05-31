@@ -6,12 +6,13 @@
 //  Copyright © 2016年 IOSDEV. All rights reserved.
 //
 
-#import "ShapedPhotoButtton.h"
+#import "ShapedPhotoView.h"
 
-@implementation ShapedPhotoButtton
+@implementation ShapedPhotoView
 
 - (void)configWithShapeLayerContentImage:(UIImage *)shapeImg subLayerContentImage:(UIImage *)subImg
 {
+    self.contentImage = subImg;
     _shapeLayer = [CAShapeLayer layer];
     _shapeLayer.fillColor = [UIColor blackColor].CGColor;
     _shapeLayer.strokeColor = [UIColor clearColor].CGColor;

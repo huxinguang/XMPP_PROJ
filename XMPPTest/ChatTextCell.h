@@ -8,14 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "ChatModel.h"
-#import "ShapedPhotoButtton.h"
+#import "ShapedPhotoView.h"
 @interface ChatTextCell : UITableViewCell
 
 @property (nonatomic ,strong)UIButton *iconBtn;
 @property (nonatomic ,strong)UIImageView *bgImgView;
 @property (nonatomic ,strong)UILabel *messageLabel;
 @property (nonatomic ,strong)UIImageView *voiceImg;
-@property (nonatomic ,strong)ShapedPhotoButtton *photoMsgBtn;
+@property (nonatomic ,strong)ShapedPhotoView *photoMsgView;
 - (void)configCellWithModel:(ChatModel *)model;
 
 @end

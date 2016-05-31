@@ -16,6 +16,8 @@
 #import "ChatTextAttachment.h"
 #import <AVFoundation/AVFoundation.h>
 
+#import "PhotoBroswerVC.h"
+#import "PhotoModel.h"
 
 #import "TZImagePickerController.h"
 #import "UIView+Layout.h"
@@ -413,21 +415,21 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                     
                     
                 }
-                else if ([message.body hasPrefix:@"audio"]){
-                    model.msgType = MessageTypeVoice;
-                    XMPPMessage *msg = message.message;
-                    for (XMPPElement *node in msg.children) {
-                        if ([node.name isEqualToString:@"attachment"]){
-                            NSString *base64str = node.stringValue;
-                            NSData *data = [[NSData alloc]initWithBase64EncodedString:base64str options:0];
-                            model.data = data;
-                            NSString *timeStr = [message.body substringFromIndex:6];
-                            
-                        }
-                        
-                    }
-                
-                }
+//                else if ([message.body hasPrefix:@"audio"]){
+//                    model.msgType = MessageTypeVoice;
+//                    XMPPMessage *msg = message.message;
+//                    for (XMPPElement *node in msg.children) {
+//                        if ([node.name isEqualToString:@"attachment"]){
+//                            NSString *base64str = node.stringValue;
+//                            NSData *data = [[NSData alloc]initWithBase64EncodedString:base64str options:0];
+//                            model.data = data;
+//                            NSString *timeStr = [message.body substringFromIndex:6];
+//                            
+//                        }
+//                        
+//                    }
+//                
+//                }
                 else if (message.body && ![message.body isEqualToString:@"image"]) {
                     
                     model.msgType = MessageTypeRichText;
@@ -603,9 +605,9 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             if (cell == nil) {
                 cell = [[ChatTextCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:photoCellIdentifier];
             }
-            cell.photoMsgBtn.tag = indexPath.row;
-            [cell.photoMsgBtn addTarget:self action:@selector(photoClickAction:) forControlEvents:UIControlEventTouchUpInside];
-            
+            cell.photoMsgView.tag = indexPath.row;
+            UITapGestureRecognizer *photoCellTapGes = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(photoClickAction:)];
+            [cell.photoMsgView addGestureRecognizer:photoCellTapGes];
             
         }
             break;
@@ -658,42 +660,70 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     NSLog(@"点击第%d行的头像",(int)btn.tag);
 }
 
-- (void)photoClickAction:(ShapedPhotoButtton *)btn{
+- (void)photoClickAction:(UITapGestureRecognizer *)gesture{
 
-    NSLog(@"点击了第%d行的照片",(int)btn.tag);
+    NSLog(@"点击了第%d行的照片",(int)gesture.view.tag);
     [self hideKeyboard];
     
-//    NSMutableArray *modelArr = [[NSMutableArray alloc]init];
-//    for (int i = 0; i < _dataArr.count; i++) {
-//        ChatModel *model = [_dataArr objectAtIndex:i];
-//        if (model.msgType == MessageTypePhoto) {
-//            [modelArr addObject:model];
-//        }
-//    }
-//    
-//    UIScrollView *photoScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
-//    photoScrollView.contentSize = CGSizeMake(modelArr.count*ScreenWidth, ScreenHeight);
-//    [[UIApplication sharedApplication].keyWindow addSubview:photoScrollView];
-//    
-//    for (int i = 0; i < modelArr.count; i++) {
-//        ChatModel *model = [modelArr objectAtIndex:i];
-//        CGFloat w = model.photo.size.width;
-//        CGFloat h = model.photo.size.height;
-//        UIImageView *imgView = [[UIImageView alloc]initWithFrame:CGRectMake(ScreenWidth*i, ScreenHeight/2-(ScreenWidth * h/w)/2, ScreenWidth, ScreenWidth * h/w)];
-//        photoScrollView addSubview:<#(nonnull UIView *)#>
-//    }
-//    
-//    
-//    
-//    for (ChatModel *item in modelArr) {
-//        if ([_dataArr objectAtIndex:btn.tag] == item) {
-//            int currentIndex = (int)[modelArr indexOfObject:item];
-//            [photoScrollView setContentOffset:CGPointMake(ScreenWidth*currentIndex, 0) animated:NO];
-//        }
-//    }
+    
+    //    NSMutableArray *modelArr = [[NSMutableArray alloc]init];
+    //    for (int i = 0; i < _dataArr.count; i++) {
+    //        ChatModel *model = [_dataArr objectAtIndex:i];
+    //        if (model.msgType == MessageTypePhoto) {
+    //            [modelArr addObject:model];
+    //        }
+    //    }
+    //
+    //    UIScrollView *photoScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+    //    photoScrollView.contentSize = CGSizeMake(modelArr.count*ScreenWidth, ScreenHeight);
+    //    [[UIApplication sharedApplication].keyWindow addSubview:photoScrollView];
+    //
+    //    for (int i = 0; i < modelArr.count; i++) {
+    //        ChatModel *model = [modelArr objectAtIndex:i];
+    //        CGFloat w = model.photo.size.width;
+    //        CGFloat h = model.photo.size.height;
+    //        UIImageView *imgView = [[UIImageView alloc]initWithFrame:CGRectMake(ScreenWidth*i, ScreenHeight/2-(ScreenWidth * h/w)/2, ScreenWidth, ScreenWidth * h/w)];
+    //        photoScrollView addSubview:<#(nonnull UIView *)#>
+    //    }
+    //
+    //
+    //
+    //    for (ChatModel *item in modelArr) {
+    //        if ([_dataArr objectAtIndex:btn.tag] == item) {
+    //            int currentIndex = (int)[modelArr indexOfObject:item];
+    //            [photoScrollView setContentOffset:CGPointMake(ScreenWidth*currentIndex, 0) animated:NO];
+    //        }
+    //    }
+    
+    ShapedPhotoView *spv = (ShapedPhotoView *)gesture.view;
+    
+    [PhotoBroswerVC show:self index:1 andView:spv photoModelBlock:^NSArray *{
+        NSMutableArray *modelArr = [[NSMutableArray alloc]init];
+        for (int i = 0; i < _dataArr.count; i++) {
+            ChatModel *model = [_dataArr objectAtIndex:i];
+            if (model.msgType == MessageTypePhoto) {
+                PhotoModel *pm = [[PhotoModel alloc]init];
+                pm.mid = i + 1;
+                [modelArr addObject:pm];
+            }
+        }
+        return modelArr;
+    }];
     
 }
 
+#pragma mark - UINavigationControllerDelegate
+
+//- (nullable id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+//                                            animationControllerForOperation:(UINavigationControllerOperation)operation
+//                                                         fromViewController:(UIViewController *)fromVC
+//                                                           toViewController:(UIViewController *)toVC  NS_AVAILABLE_IOS(7_0){
+//    
+//    
+//
+//
+//
+//}
 
 - (void)hideKeyboard{
     [self.messageToolView.messageInputTextView resignFirstResponder];

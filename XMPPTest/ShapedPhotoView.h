@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ShapedPhotoButtton : UIButton
+@interface ShapedPhotoView : UIImageView
 
 @property (nonatomic ,strong)CALayer *subLayer;
 @property (nonatomic ,strong)CAShapeLayer *shapeLayer;
+@property (nonatomic ,strong)UIImage *contentImage;
 
 - (void)configWithShapeLayerContentImage:(UIImage *)shapeImg subLayerContentImage:(UIImage *)subImg;
 
