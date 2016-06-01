@@ -16,11 +16,10 @@
 #import "ChatTextAttachment.h"
 #import <AVFoundation/AVFoundation.h>
 
-#import "PhotoBroswerVC.h"
-#import "PhotoModel.h"
 
 #import "TZImagePickerController.h"
-#import "UIView+Layout.h"
+#import "PhotoBrowseTransitionAnimation.h"
+#import "PhotoBrowseViewController.h"
 
 #define  MessageFont [UIFont systemFontOfSize:15]
 #define  MessageMaxWidth (ScreenWidth - 10*6 - 40*2)
@@ -71,7 +70,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     NSString *playName;//录音名字
 }
 
-@property (nonatomic, strong) UITableView *chatTableView;
+
 
 @property (nonatomic ,strong)NSMutableArray *dataArr;
 
@@ -103,15 +102,19 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    self.navigationController.delegate = nil;//必须置为nil
 }
 
-- (void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    self.navigationController.delegate = self;
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
 }
+
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -665,6 +668,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     NSLog(@"点击了第%d行的照片",(int)gesture.view.tag);
     [self hideKeyboard];
     
+    self.currentIndex = [NSIndexPath indexPathForRow:gesture.view.tag inSection:0];
     
     //    NSMutableArray *modelArr = [[NSMutableArray alloc]init];
     //    for (int i = 0; i < _dataArr.count; i++) {
@@ -695,35 +699,53 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     //        }
     //    }
     
-    ShapedPhotoView *spv = (ShapedPhotoView *)gesture.view;
+//    ShapedPhotoView *spv = (ShapedPhotoView *)gesture.view;
+//    
+//    [PhotoBroswerVC show:self index:1 andView:spv photoModelBlock:^NSArray *{
+//        NSMutableArray *modelArr = [[NSMutableArray alloc]init];
+//        for (int i = 0; i < _dataArr.count; i++) {
+//            ChatModel *model = [_dataArr objectAtIndex:i];
+//            if (model.msgType == MessageTypePhoto) {
+//                PhotoModel *pm = [[PhotoModel alloc]init];
+//                pm.mid = i + 1;
+//                [modelArr addObject:pm];
+//            }
+//        }
+//        return modelArr;
+//    }];
     
-    [PhotoBroswerVC show:self index:1 andView:spv photoModelBlock:^NSArray *{
-        NSMutableArray *modelArr = [[NSMutableArray alloc]init];
-        for (int i = 0; i < _dataArr.count; i++) {
-            ChatModel *model = [_dataArr objectAtIndex:i];
-            if (model.msgType == MessageTypePhoto) {
-                PhotoModel *pm = [[PhotoModel alloc]init];
-                pm.mid = i + 1;
-                [modelArr addObject:pm];
-            }
+    
+    
+    NSMutableArray *photoArr = [[NSMutableArray alloc]init];
+    for (int i = 0; i < _dataArr.count; i++) {
+        ChatModel *model = [_dataArr objectAtIndex:i];
+        if (model.msgType == MessageTypePhoto) {
+            [photoArr addObject:model.photo];
         }
-        return modelArr;
-    }];
+    }
+    
+    PhotoBrowseViewController *pbVC = [[PhotoBrowseViewController alloc]init];
+    pbVC.photoArr = photoArr;
+    [self.navigationController pushViewController:pbVC animated:YES];
     
 }
 
 #pragma mark - UINavigationControllerDelegate
 
-//- (nullable id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
-//                                            animationControllerForOperation:(UINavigationControllerOperation)operation
-//                                                         fromViewController:(UIViewController *)fromVC
-//                                                           toViewController:(UIViewController *)toVC  NS_AVAILABLE_IOS(7_0){
-//    
-//    
-//
-//
-//
-//}
+- (nullable id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+                                            animationControllerForOperation:(UINavigationControllerOperation)operation
+                                                         fromViewController:(UIViewController *)fromVC
+                                                           toViewController:(UIViewController *)toVC  NS_AVAILABLE_IOS(7_0)
+{
+    
+    if(fromVC == self && [toVC isKindOfClass:[PhotoBrowseViewController class]]){
+        PhotoBrowseTransitionAnimation *pbTA = [[PhotoBrowseTransitionAnimation alloc]initWithTransitionType:PhotoBrowseTransitionTypeEnter];
+        return pbTA;
+    }
+
+    return nil;
+
+}
 
 - (void)hideKeyboard{
     [self.messageToolView.messageInputTextView resignFirstResponder];

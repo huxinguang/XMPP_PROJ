@@ -18,11 +18,7 @@
 
 @property (weak, nonatomic) IBOutlet PBPGView *progressView;
 
-@property (weak, nonatomic) IBOutlet UIView *bottomView;
 
-@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
-
-@property (weak, nonatomic) IBOutlet UILabel *descLabel;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomMarginC;
 
@@ -100,11 +96,11 @@
     
     if(self.photoModel == nil) return;
     
-    BOOL isNetWorkShow = _photoModel.image == nil;
+    BOOL isNetWorkShow = _photoModel.photo == nil;
     
     if(isNetWorkShow){//网络请求
         
-        
+        /*
         
         NSString *urlStr = [_photoModel.image_HD_U stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         SDWebImageOptions options = SDWebImageLowPriority | SDWebImageRetryFailed;
@@ -113,11 +109,11 @@
         UIImage *imageCache = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:[_photoModel.image_HD_U stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         if([urlStr rangeOfString:@".gif"].location != NSNotFound)
         {
-//            NSData *data = [[SDImageCache sharedImageCache]diskImageDataBySearchingAllPathsForKey:urlStr];
-//            if (data)
-//            {
-//                imageCache = [FLAnimatedImage imageWithData:data];
-//            }
+            NSData *data = [[SDImageCache sharedImageCache]diskImageDataBySearchingAllPathsForKey:urlStr];
+            if (data)
+            {
+                imageCache = [FLAnimatedImage imageWithData:data];
+            }
         }
         [self.photoImageView sd_setImageWithURL:[NSURL URLWithString:urlStr] placeholderImage:imageCache options:options progress:^(NSInteger receivedSize, NSInteger expectedSize) {
             _progressView.hidden = NO;
@@ -147,6 +143,12 @@
                 self.scrollView.contentSize = size;
             }
         }];
+        
+        
+        
+        */
+        
+        
 //        [self.photoImageView imageWithUrlStr:[_photoModel.image_HD_U stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] phImage:imageCache progressBlock:^(NSInteger receivedSize, NSInteger expectedSize) {
 //            
 //            _progressView.hidden = NO;
@@ -180,7 +182,7 @@
 //        }];
     }else{
         
-        self.photoImageView.image = _photoModel.image;
+        self.photoImageView.image = _photoModel.photo;
         
         //标记
         self.hasImage = YES;
@@ -188,9 +190,6 @@
     
     self.scrollView.contentSize = self.photoImageView.frame.size;
     
-    //标题
-    _titleLabel.text = _photoModel.title;
-    _descLabel.text = _photoModel.desc;
 }
 
 
@@ -380,35 +379,6 @@
 //        if(_ItemViewLongPressBlock != nil) _ItemViewLongPressBlock(self.photoModel.image_HD_U);
 //    }
 }
-
-
-
-/*
- *  处理bottomView
- */
--(void)handleBotoomView{
-    
-    CGFloat h = _bottomView.frame.size.height;
-    
-    BOOL show = _bottomView.tag == 0;
-    
-    _bottomView.tag = show?1:0;
-    
-    _bottomMarginC.constant = show?-h:0;
-    
-    [UIView animateWithDuration:.25f animations:^{
-        
-        [_bottomView setNeedsLayout];
-        [_bottomView layoutIfNeeded];
-    }];
-    
-}
-
-
-
-
-
-
 
 
 

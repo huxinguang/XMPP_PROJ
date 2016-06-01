@@ -29,7 +29,6 @@
 /*
  *  处理bottomView
  */
--(void)handleBotoomView;
 
 @property(nonatomic,copy) void (^ItemViewLongPressBlock)(NSString* image);
 

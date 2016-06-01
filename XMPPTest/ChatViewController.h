@@ -12,5 +12,6 @@
 
 @property (nonatomic ,strong)XMPPJID *friendJID;
 @property (nonatomic ,strong)NSFetchedResultsController *fetchedResultsController;
-
+@property (nonatomic ,strong)UITableView *chatTableView;
+@property (nonatomic ,assign)NSIndexPath *currentIndex;//点击的图片所在的cell
 @end

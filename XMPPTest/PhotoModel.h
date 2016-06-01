@@ -1,84 +1,15 @@
 //
-//  PBModel.h
-//  CorePhotoBroswerVC
+//  PhotoModel.h
+//  XMPPTest
 //
-//  Created by 成林 on 15/5/4.
-//  Copyright (c) 2015年 冯成林. All rights reserved.
+//  Created by huxinguang on 16/6/1.
+//  Copyright © 2016年 IOSDEV. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 
 @interface PhotoModel : NSObject
 
-/** mid，保存图片缓存唯一标识，必须传 */
-@property (nonatomic,assign) NSUInteger mid;
-
-
-
-
-/*
- *  网络图片
- */
-
-/** 高清图地址 */
-@property (nonatomic,copy) NSString *image_HD_U;
-
-
-
-/*
- *  本地图片
- */
-@property (nonatomic,strong) UIImage *image;
-
-
-
-
-
-
-
-
-
-/** 标题 */
-@property (nonatomic,copy) NSString *title;
-
-/** 描述 */
-@property (nonatomic,copy) NSString *desc;
-
-
-
-
-
-
-
-
-/*
- *  检查数组合法性
- */
-+(BOOL)check:(NSArray *)photoModels;
-
-
-
-/**
- *  读取
- *
- *  @return 是否已经保存到本地
- */
--(BOOL)read;
-
-
-
-/*
- *  保存
- */
--(void)save;
-
-
-/*
- *清除保存记录
- */
--(void)saveNo;
-
-
+@property (nonatomic ,strong)UIImage *photo;
 
 @end
