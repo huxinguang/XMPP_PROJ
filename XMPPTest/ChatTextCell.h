@@ -16,6 +16,7 @@
 @property (nonatomic ,strong)UILabel *messageLabel;
 @property (nonatomic ,strong)UIImageView *voiceImg;
 @property (nonatomic ,strong)ShapedPhotoView *photoMsgView;
+@property (nonatomic ,strong)ChatModel *cm;
 - (void)configCellWithModel:(ChatModel *)model;
 
 @end

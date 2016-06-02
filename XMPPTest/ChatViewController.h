@@ -8,10 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger,TransitionStatus) {
+    TransitionStatusStarted,
+    TransitionStatusEnded,
+    TransitionStatusNone
+};
+
 @interface ChatViewController : UIViewController
 
 @property (nonatomic ,strong)XMPPJID *friendJID;
 @property (nonatomic ,strong)NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic ,strong)UITableView *chatTableView;
 @property (nonatomic ,assign)NSIndexPath *currentIndex;//点击的图片所在的cell
+@property (nonatomic ,assign)TransitionStatus transitionStatus;
 @end

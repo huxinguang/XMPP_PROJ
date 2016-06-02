@@ -12,6 +12,7 @@
 @implementation PhotoScrollView
 
 
+
 -(void)layoutSubviews{
     
     [super layoutSubviews];
@@ -50,9 +51,6 @@
             photoItemView.frame = frame;
         }
     }];
-    
-    
-    
     
     
     if(_isScrollToIndex){

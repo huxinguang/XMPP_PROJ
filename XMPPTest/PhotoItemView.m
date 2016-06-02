@@ -1,30 +1,12 @@
 
 
 #import "PhotoItemView.h"
-#import "UIView+Extend.h"
 //#import "PhotoImageView.h"
-#import "UIView+PBExtend.h"
-#import "PBPGView.h"
-#import "PBBlurImageView.h"
 #import "PBConst.h"
-#import "UIImage+Extend.h"
-
-
-
 
 @interface PhotoItemView ()<UIScrollViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-
-@property (weak, nonatomic) IBOutlet PBPGView *progressView;
-
-
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomMarginC;
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *rightMarginC;
-
-
 
 /** view的单击 */
 @property (nonatomic,strong) UITapGestureRecognizer *tap_single_viewGesture;
@@ -40,17 +22,6 @@
 
 /** 长按手势 */
 @property(nonatomic,strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
-
-
-
-
-
-
-
-
-/** 展示照片的视图 */
-//@property (nonatomic,strong) PhotoImageView *photoImageView;
-
 
 /** 双击放大 */
 @property (nonatomic,assign) BOOL isDoubleClickZoom;
@@ -288,6 +259,20 @@
 }
 
 
+
+-(CGRect)frameWithW:(CGFloat)w h:(CGFloat)h center:(CGPoint)center{
+    
+    CGFloat x = center.x - w *.5f;
+    CGFloat y = center.y - h * .5f;
+    
+    if(y<0) y=0;
+    
+    CGRect frame = (CGRect){CGPointMake(x, y),CGSizeMake(w, h)};
+    
+    return frame;
+}
+
+
 -(PhotoImageView *)photoImageView{
     
     if(_photoImageView == nil){
@@ -351,7 +336,7 @@
         
         CGFloat wh =1;
         
-        CGRect rect = [UIView frameWithW:wh h:wh center:loc];
+        CGRect rect = [self frameWithW:wh h:wh center:loc];
         
         [self.scrollView zoomToRect:rect animated:YES];
         //[self.scrollView setZoomScale:2.0f animated:YES];
@@ -486,7 +471,7 @@
         return;
     }
     
-    [self.photoImageView.image savedPhotosAlbum:ItemImageSaveCompleteBlock failBlock:failBlock];
+//    [self.photoImageView.image savedPhotosAlbum:ItemImageSaveCompleteBlock failBlock:failBlock];
 }
 
 

@@ -15,6 +15,9 @@
 /** 相册模型 */
 @property (nonatomic,strong) PhotoModel *photoModel;
 
+/** 展示照片的视图 */
+@property (nonatomic,strong) PhotoImageView *photoImageView;
+
 /** 缩放比例回归正常 */
 @property (nonatomic,assign) BOOL isScaleNormal;
 
@@ -43,8 +46,7 @@
  */
 -(void)reset;
 
-/** 展示照片的视图 */
-@property (nonatomic,strong) PhotoImageView *photoImageView;
+
 
 +(id)viewFromXIB;
 

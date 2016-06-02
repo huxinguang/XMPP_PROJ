@@ -20,6 +20,7 @@
 #import "TZImagePickerController.h"
 #import "PhotoBrowseTransitionAnimation.h"
 #import "PhotoBrowseViewController.h"
+#import "PhotoModel.h"
 
 #define  MessageFont [UIFont systemFontOfSize:15]
 #define  MessageMaxWidth (ScreenWidth - 10*6 - 40*2)
@@ -52,7 +53,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 };
 
 
-@interface ChatViewController ()<UITableViewDataSource,UITableViewDelegate,XMPPStreamDelegate,NSFetchedResultsControllerDelegate,ZBMessageInputViewDelegate,ZBMessageShareMenuViewDelegate,ZBMessageManagerFaceViewDelegate,TZImagePickerControllerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>{
+@interface ChatViewController ()<UITableViewDataSource,UITableViewDelegate,XMPPStreamDelegate,NSFetchedResultsControllerDelegate,ZBMessageInputViewDelegate,ZBMessageShareMenuViewDelegate,ZBMessageManagerFaceViewDelegate,TZImagePickerControllerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate,SyncCurrentIndexDelegate>{
     
     CurrentKeyboard currentKeyboard;
     double animationDuration;
@@ -68,6 +69,9 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     NSMutableArray *volumImages;//图片组
     double lowPassResults;
     NSString *playName;//录音名字
+    
+    
+    NSMutableArray *chatModelArr;//含图片的ChatModel
 }
 
 
@@ -107,7 +111,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    self.navigationController.delegate = self;
+    
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -577,9 +581,13 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     //显示时滚动到底部
-    if (tableView.contentSize.height >= tableView.frame.size.height) {
-        [tableView setContentOffset:CGPointMake(0, tableView.contentSize.height-tableView.frame.size.height) animated:NO];
+    
+    if (self.transitionStatus == TransitionStatusNone) {
+        if (tableView.contentSize.height >= tableView.frame.size.height) {
+            [tableView setContentOffset:CGPointMake(0, tableView.contentSize.height-tableView.frame.size.height) animated:NO];
+        }
     }
+    
     return _dataArr.count;
 }
 
@@ -665,67 +673,30 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 - (void)photoClickAction:(UITapGestureRecognizer *)gesture{
 
-    NSLog(@"点击了第%d行的照片",(int)gesture.view.tag);
     [self hideKeyboard];
     
     self.currentIndex = [NSIndexPath indexPathForRow:gesture.view.tag inSection:0];
     
-    //    NSMutableArray *modelArr = [[NSMutableArray alloc]init];
-    //    for (int i = 0; i < _dataArr.count; i++) {
-    //        ChatModel *model = [_dataArr objectAtIndex:i];
-    //        if (model.msgType == MessageTypePhoto) {
-    //            [modelArr addObject:model];
-    //        }
-    //    }
-    //
-    //    UIScrollView *photoScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
-    //    photoScrollView.contentSize = CGSizeMake(modelArr.count*ScreenWidth, ScreenHeight);
-    //    [[UIApplication sharedApplication].keyWindow addSubview:photoScrollView];
-    //
-    //    for (int i = 0; i < modelArr.count; i++) {
-    //        ChatModel *model = [modelArr objectAtIndex:i];
-    //        CGFloat w = model.photo.size.width;
-    //        CGFloat h = model.photo.size.height;
-    //        UIImageView *imgView = [[UIImageView alloc]initWithFrame:CGRectMake(ScreenWidth*i, ScreenHeight/2-(ScreenWidth * h/w)/2, ScreenWidth, ScreenWidth * h/w)];
-    //        photoScrollView addSubview:<#(nonnull UIView *)#>
-    //    }
-    //
-    //
-    //
-    //    for (ChatModel *item in modelArr) {
-    //        if ([_dataArr objectAtIndex:btn.tag] == item) {
-    //            int currentIndex = (int)[modelArr indexOfObject:item];
-    //            [photoScrollView setContentOffset:CGPointMake(ScreenWidth*currentIndex, 0) animated:NO];
-    //        }
-    //    }
-    
-//    ShapedPhotoView *spv = (ShapedPhotoView *)gesture.view;
-//    
-//    [PhotoBroswerVC show:self index:1 andView:spv photoModelBlock:^NSArray *{
-//        NSMutableArray *modelArr = [[NSMutableArray alloc]init];
-//        for (int i = 0; i < _dataArr.count; i++) {
-//            ChatModel *model = [_dataArr objectAtIndex:i];
-//            if (model.msgType == MessageTypePhoto) {
-//                PhotoModel *pm = [[PhotoModel alloc]init];
-//                pm.mid = i + 1;
-//                [modelArr addObject:pm];
-//            }
-//        }
-//        return modelArr;
-//    }];
-    
-    
-    
-    NSMutableArray *photoArr = [[NSMutableArray alloc]init];
+    NSMutableArray *photoModelArr = [[NSMutableArray alloc]init];
+    chatModelArr = [[NSMutableArray alloc]init];//包含图片的cell的model数组
     for (int i = 0; i < _dataArr.count; i++) {
         ChatModel *model = [_dataArr objectAtIndex:i];
         if (model.msgType == MessageTypePhoto) {
-            [photoArr addObject:model.photo];
+            PhotoModel *pm = [[PhotoModel alloc]init];
+            pm.photo = model.photo;
+            [photoModelArr addObject:pm];
+            [chatModelArr addObject:model];
         }
     }
     
+    ChatTextCell * cell = [self.chatTableView cellForRowAtIndexPath:self.currentIndex];
+    NSUInteger currentIndex = [chatModelArr indexOfObject:cell.cm];
+    
     PhotoBrowseViewController *pbVC = [[PhotoBrowseViewController alloc]init];
-    pbVC.photoArr = photoArr;
+    self.navigationController.delegate = self;//必须在这设置，不能在viewDidLoad或viewDidAppear中设置，因为动画执行时会调用viewWillDisappear,在该方法中又将delegate置为nil了
+    pbVC.delegate = self;
+    pbVC.index = currentIndex;
+    pbVC.photoModels = photoModelArr;
     [self.navigationController pushViewController:pbVC animated:YES];
     
 }
@@ -746,6 +717,15 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     return nil;
 
 }
+
+#pragma mark - SyncCurrentIndexDelegate
+
+- (void)syncCurrentIndex:(NSInteger)index{
+    ChatModel *model = [chatModelArr objectAtIndex:index];
+    self.currentIndex = [NSIndexPath indexPathForRow:[_dataArr indexOfObject:model] inSection:0];
+}
+
+
 
 - (void)hideKeyboard{
     [self.messageToolView.messageInputTextView resignFirstResponder];

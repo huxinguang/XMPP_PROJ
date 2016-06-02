@@ -98,6 +98,7 @@ static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
 
 - (void)configCellWithModel:(ChatModel *)model{
     
+    self.cm = model;
     
     switch (model.msgType) {
         case MessageTypeRichText:

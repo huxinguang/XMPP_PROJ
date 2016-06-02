@@ -11,7 +11,7 @@
 #import "PhotoBrowseViewController.h"
 #import "ChatTextCell.h"
 
-#define AnimationDuration 0.35
+#define AnimationDuration 0.2
 
 @implementation PhotoBrowseTransitionAnimation
 
@@ -54,15 +54,17 @@
         
         CGRect rect = [self calFrameWithImage:cell.photoMsgView.contentImage];
         [UIView animateWithDuration:AnimationDuration animations:^{
-            toVC.view.alpha = 1.0;
+//            toVC.view.alpha = 1.0;
             animationImgView.frame = rect;
         } completion:^(BOOL finished) {
+            toVC.view.alpha = 1.0;
             cell.photoMsgView.hidden = NO;
-//            animationImgView.hidden = YES;
-//            [animationImgView removeFromSuperview];
-            
+            animationImgView.hidden = YES;
+            [animationImgView removeFromSuperview];
             //如果动画过渡取消了就标记不完成，否则才完成，这里可以直接写YES，如果有手势过渡才需要判断，必须标记，否则系统不会中动画完成的部署，会出现无法交互之类的bug
             [transitionContext completeTransition:YES];
+            
+            fromVC.transitionStatus = TransitionStatusStarted;
         }];
         
         
@@ -73,13 +75,24 @@
         ChatTextCell *cell = [toVC.chatTableView cellForRowAtIndexPath:toVC.currentIndex];//当浏览图片的过程中翻页时currentIndex会相应改变
         UIView *containerView = [transitionContext containerView];
         
-        UIImageView *animationImgView = [[UIImageView alloc]initWithImage:cell.photoMsgView.contentImage];
+        UIImageView *animationImgView = [[UIImageView alloc]initWithImage:fromVC.currentItemView.photoImageView.image];
         animationImgView.contentMode = UIViewContentModeScaleAspectFill;
-        animationImgView.frame = [containerView convertRect:cell.photoMsgView.frame fromView:cell.photoMsgView.superview];
+        animationImgView.frame = [containerView convertRect:fromVC.currentItemView.photoImageView.frame fromView:fromVC.currentItemView.photoImageView.superview];
         [containerView addSubview:toVC.view];
         [containerView addSubview:animationImgView];
         
+        CGRect imageBackRect = [containerView convertRect:cell.photoMsgView.frame fromView:cell.photoMsgView.superview];
         
+        [UIView animateWithDuration:AnimationDuration animations:^{
+            toVC.view.alpha = 1.0;
+            animationImgView.frame = imageBackRect;
+        } completion:^(BOOL finished) {
+            animationImgView.hidden = YES;
+            [animationImgView removeFromSuperview];
+            [transitionContext completeTransition:YES];
+            toVC.transitionStatus = TransitionStatusEnded;
+            
+        }];
     
     
     }
