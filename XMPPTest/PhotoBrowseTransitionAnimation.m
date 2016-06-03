@@ -10,6 +10,7 @@
 #import "ChatViewController.h"
 #import "PhotoBrowseViewController.h"
 #import "ChatTextCell.h"
+#import "ShapedPhotoView.h"
 
 #define AnimationDuration 0.2
 
@@ -53,6 +54,7 @@
         
         
         CGRect rect = [self calFrameWithImage:cell.photoMsgView.contentImage];
+        
         [UIView animateWithDuration:AnimationDuration animations:^{
 //            toVC.view.alpha = 1.0;
             animationImgView.frame = rect;
@@ -85,7 +87,12 @@
         
         [UIView animateWithDuration:AnimationDuration animations:^{
             toVC.view.alpha = 1.0;
-            animationImgView.frame = imageBackRect;
+            if ([toVC.chatTableView.visibleCells containsObject:cell]) {//不在可视范围内的cell无法确定其photoMsgView的frame,所以不加frame动画，加透明度动画
+                animationImgView.frame = imageBackRect;
+            }else{
+                animationImgView.alpha = 0;
+            }
+            
         } completion:^(BOOL finished) {
             animationImgView.hidden = YES;
             [animationImgView removeFromSuperview];

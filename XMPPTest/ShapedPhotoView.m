@@ -13,7 +13,9 @@
 - (void)configWithShapeLayerContentImage:(UIImage *)shapeImg subLayerContentImage:(UIImage *)subImg
 {
     self.contentImage = subImg;
-    _shapeLayer = [CAShapeLayer layer];
+    if (!_shapeLayer) {
+        _shapeLayer = [CAShapeLayer layer];
+    }
     _shapeLayer.fillColor = [UIColor blackColor].CGColor;
     _shapeLayer.strokeColor = [UIColor clearColor].CGColor;
     _shapeLayer.frame = self.bounds;
@@ -21,10 +23,15 @@
     _shapeLayer.contentsScale = [UIScreen mainScreen].scale;  //非常关键设置自动拉伸的效果且不变形
     _shapeLayer.contents = (id)shapeImg.CGImage;
     
-    _subLayer = [CALayer layer];
+    if (!_subLayer) {
+        _subLayer = [CALayer layer];
+    }
     _subLayer.mask = _shapeLayer;
     _subLayer.contents = (id)subImg.CGImage;
     _subLayer.frame = self.bounds;
+    if (_subLayer) {
+        [_subLayer removeFromSuperlayer];
+    }
     [self.layer addSublayer:_subLayer];
     
 }
