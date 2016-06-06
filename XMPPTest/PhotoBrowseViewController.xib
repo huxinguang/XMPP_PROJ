@@ -23,13 +23,13 @@
                         <outlet property="delegate" destination="-1" id="qKh-3Q-NNV"/>
                     </connections>
                 </scrollView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uJK-2t-GuO" userLabel="下载按钮">
-                    <rect key="frame" x="20" y="550" width="30" height="30"/>
+                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uJK-2t-GuO" userLabel="下载按钮">
+                    <rect key="frame" x="9" y="554" width="52" height="22"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="30" id="3Mp-eL-M5k"/>
-                        <constraint firstAttribute="height" constant="30" id="eiq-YB-mnN"/>
+                        <constraint firstAttribute="width" constant="36" id="3Mp-eL-M5k"/>
+                        <constraint firstAttribute="height" constant="32" id="eiq-YB-mnN"/>
                     </constraints>
-                    <state key="normal" title="保存"/>
+                    <state key="normal" image="download"/>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f6d-uy-0v4" userLabel="全部图片">
                     <rect key="frame" x="550" y="550" width="30" height="30"/>
@@ -53,4 +53,7 @@
             </constraints>
         </view>
     </objects>
+    <resources>
+        <image name="download" width="16" height="16"/>
+    </resources>
 </document>

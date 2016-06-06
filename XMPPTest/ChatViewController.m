@@ -349,6 +349,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 - (void)sendMessage:(ZBMessage *)message{
     
+    self.transitionStatus = TransitionStatusNone;
+    
     if ([self.messageToolView.messageInputTextView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0) {
         XMPPMessage *msg = [XMPPMessage messageWithType:@"chat" to:self.friendJID];
         [msg addBody:self.messageToolView.messageInputTextView.text];

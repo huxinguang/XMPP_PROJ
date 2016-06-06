@@ -100,6 +100,7 @@
 		C971D7601CF81F4B00C9F89C /* photo_sel_previewVc@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C971D7521CF81F4B00C9F89C /* photo_sel_previewVc@2x.png */; };
 		C971D7611CF81F4B00C9F89C /* preview_number_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C971D7531CF81F4B00C9F89C /* preview_number_icon@2x.png */; };
 		C971D7621CF81F4B00C9F89C /* TableViewArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C971D7541CF81F4B00C9F89C /* TableViewArrow@2x.png */; };
+		C97E26C41D055EEB00DBD8D1 /* download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E26C31D055EEB00DBD8D1 /* download@2x.png */; };
 		C9897CB31CE06A2800E9F8B4 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */; };
 		C9897CBD1CE082D200E9F8B4 /* ChatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CBC1CE082D200E9F8B4 /* ChatModel.m */; };
 		C9897CCB1CE1798F00E9F8B4 /* ChatTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CCA1CE1798F00E9F8B4 /* ChatTextCell.m */; };
@@ -345,6 +346,7 @@
 		C971D7541CF81F4B00C9F89C /* TableViewArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TableViewArrow@2x.png"; sourceTree = "<group>"; };
 		C971D7691CF849E600C9F89C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		C971D76A1CF849E600C9F89C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		C97E26C31D055EEB00DBD8D1 /* download@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "download@2x.png"; sourceTree = "<group>"; };
 		C9897CB01CE06A2800E9F8B4 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		C9897CBB1CE082D200E9F8B4 /* ChatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatModel.h; sourceTree = "<group>"; };
@@ -560,6 +562,7 @@
 				C9155A9F1CFECF3300F304EB /* PhotoModel.m */,
 				C9155AA41CFEDCE700F304EB /* PBConst.h */,
 				C971D71F1CF7087100C9F89C /* 启动页-iphone6.png */,
+				C97E26C31D055EEB00DBD8D1 /* download@2x.png */,
 				C9155A601CFD927B00F304EB /* PhotoBrowse */,
 				C971D7261CF81C5900C9F89C /* ImagePickerController */,
 				C9897D1D1CE3351700E9F8B4 /* Emotion */,
@@ -1090,6 +1093,7 @@
 				C9897D8A1CE3354000E9F8B4 /* Expression_44@2x.png in Resources */,
 				130F10741CE6269B00EDC071 /* Expression_85@2x.png in Resources */,
 				130F10711CE6269B00EDC071 /* Expression_82@2x.png in Resources */,
+				C97E26C41D055EEB00DBD8D1 /* download@2x.png in Resources */,
 				130F107A1CE6269B00EDC071 /* Expression_91@2x.png in Resources */,
 				C9897D671CE3354000E9F8B4 /* Expression_9@2x.png in Resources */,
 				130F10751CE6269B00EDC071 /* Expression_86@2x.png in Resources */,

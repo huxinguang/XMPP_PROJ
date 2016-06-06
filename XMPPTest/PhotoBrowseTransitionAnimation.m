@@ -93,6 +93,10 @@
         [containerView addSubview:toVC.view];
         [containerView addSubview:animationImgView];
         
+        
+        
+        
+        
         cell.photoMsgView.hidden = YES;
         
         CGRect imageBackRect = [containerView convertRect:cell.photoMsgView.frame fromView:cell.photoMsgView.superview];
