@@ -118,6 +118,11 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     [super viewDidDisappear:animated];
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    
+}
 
 
 - (void)viewDidLoad {
