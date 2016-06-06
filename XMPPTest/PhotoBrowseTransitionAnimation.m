@@ -51,20 +51,30 @@
         
         cell.photoMsgView.hidden = YES;
         toVC.view.alpha = 0.0;
-        
+        for (UIView *item in fromVC.view.subviews) {
+            item.hidden = YES;
+        }
+        fromVC.view.backgroundColor = Color(20, 20, 20);
         
         CGRect rect = [self calFrameWithImage:cell.photoMsgView.contentImage];
         
         [UIView animateWithDuration:AnimationDuration animations:^{
-//            toVC.view.alpha = 1.0;
             animationImgView.frame = rect;
         } completion:^(BOOL finished) {
             toVC.view.alpha = 1.0;
+            
+            for (UIView *item in fromVC.view.subviews) {
+                item.hidden = NO;
+            }
+            fromVC.view.backgroundColor = Color(235, 235, 235);
+            
             cell.photoMsgView.hidden = NO;
             animationImgView.hidden = YES;
             [animationImgView removeFromSuperview];
             //如果动画过渡取消了就标记不完成，否则才完成，这里可以直接写YES，如果有手势过渡才需要判断，必须标记，否则系统不会中动画完成的部署，会出现无法交互之类的bug
             [transitionContext completeTransition:YES];
+            
+            fromVC.view.backgroundColor = Color(235, 235, 235);
             
             fromVC.transitionStatus = TransitionStatusStarted;
         }];
@@ -83,6 +93,8 @@
         [containerView addSubview:toVC.view];
         [containerView addSubview:animationImgView];
         
+        cell.photoMsgView.hidden = YES;
+        
         CGRect imageBackRect = [containerView convertRect:cell.photoMsgView.frame fromView:cell.photoMsgView.superview];
         
         [UIView animateWithDuration:AnimationDuration animations:^{
@@ -94,6 +106,7 @@
             }
             
         } completion:^(BOOL finished) {
+            cell.photoMsgView.hidden = NO;
             animationImgView.hidden = YES;
             [animationImgView removeFromSuperview];
             [transitionContext completeTransition:YES];

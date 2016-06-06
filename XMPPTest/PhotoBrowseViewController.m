@@ -55,42 +55,35 @@
     }
 }
 
--(UIStatusBarStyle)preferredStatusBarStyle{
-    
-    return UIStatusBarStyleLightContent;
+
+//隐藏状态栏
+- (BOOL)prefersStatusBarHidden{
+    return YES;
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     self.navigationController.delegate = self;//设置导航协议
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     self.navigationController.delegate=nil;
+    [self.navigationController setNavigationBarHidden:NO];
 
-    if (orginStatusBarSate) {
-        [self.navigationController setNavigationBarHidden:NO];
-        [[UIApplication sharedApplication] setStatusBarHidden:orginStatusBarSate];
-    } else {
-        [[UIApplication sharedApplication] setStatusBarHidden:orginStatusBarSate];
-        [self.navigationController setNavigationBarHidden:NO];
-    }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = Color(20, 20, 20);
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.navigationController.navigationBarHidden = YES;
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
     [self pagesPrepare];
     
     _scrollView.backgroundColor = Color(20, 20, 20);
-    orginStatusBarSate = [UIApplication sharedApplication].isStatusBarHidden;
+    _scrollView.pagingEnabled = YES;//必须设置，不然没有翻页效果，xib中已设置
     _scrollViewRightMarginC.constant = - PBMargin;
 }
 

@@ -23,6 +23,7 @@
     _shapeLayer.contentsScale = [UIScreen mainScreen].scale;  //非常关键设置自动拉伸的效果且不变形
     _shapeLayer.contents = (id)shapeImg.CGImage;
     
+    
     if (!_subLayer) {
         _subLayer = [CALayer layer];
     }
