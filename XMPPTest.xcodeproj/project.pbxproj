@@ -102,6 +102,9 @@
 		C971D7621CF81F4B00C9F89C /* TableViewArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C971D7541CF81F4B00C9F89C /* TableViewArrow@2x.png */; };
 		C97E26C61D0576E800DBD8D1 /* download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E26C51D0576E800DBD8D1 /* download@2x.png */; };
 		C97E26CD1D06A1AE00DBD8D1 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = C97E26CC1D06A1AE00DBD8D1 /* MBProgressHUD.m */; };
+		C97E26D11D06CC2F00DBD8D1 /* ico_filter_gender@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E26D01D06CC2F00DBD8D1 /* ico_filter_gender@2x.png */; };
+		C97E26D51D06CF9300DBD8D1 /* PersonalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C97E26D31D06CF9300DBD8D1 /* PersonalViewController.m */; };
+		C97E26D61D06CF9300DBD8D1 /* PersonalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C97E26D41D06CF9300DBD8D1 /* PersonalViewController.xib */; };
 		C9897CB31CE06A2800E9F8B4 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */; };
 		C9897CBD1CE082D200E9F8B4 /* ChatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CBC1CE082D200E9F8B4 /* ChatModel.m */; };
 		C9897CCB1CE1798F00E9F8B4 /* ChatTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CCA1CE1798F00E9F8B4 /* ChatTextCell.m */; };
@@ -350,6 +353,10 @@
 		C97E26C51D0576E800DBD8D1 /* download@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "download@2x.png"; sourceTree = "<group>"; };
 		C97E26CB1D06A1AE00DBD8D1 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		C97E26CC1D06A1AE00DBD8D1 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
+		C97E26D01D06CC2F00DBD8D1 /* ico_filter_gender@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_filter_gender@2x.png"; sourceTree = "<group>"; };
+		C97E26D21D06CF9300DBD8D1 /* PersonalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonalViewController.h; sourceTree = "<group>"; };
+		C97E26D31D06CF9300DBD8D1 /* PersonalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonalViewController.m; sourceTree = "<group>"; };
+		C97E26D41D06CF9300DBD8D1 /* PersonalViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PersonalViewController.xib; sourceTree = "<group>"; };
 		C9897CB01CE06A2800E9F8B4 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		C9897CBB1CE082D200E9F8B4 /* ChatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatModel.h; sourceTree = "<group>"; };
@@ -543,6 +550,9 @@
 				C98AEC821CDC90D9005C7DAC /* RosterTableViewCell.xib */,
 				C9897CB01CE06A2800E9F8B4 /* ChatViewController.h */,
 				C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */,
+				C97E26D21D06CF9300DBD8D1 /* PersonalViewController.h */,
+				C97E26D31D06CF9300DBD8D1 /* PersonalViewController.m */,
+				C97E26D41D06CF9300DBD8D1 /* PersonalViewController.xib */,
 				C9897CC91CE1798F00E9F8B4 /* ChatTextCell.h */,
 				C9897CCA1CE1798F00E9F8B4 /* ChatTextCell.m */,
 				C9897CBB1CE082D200E9F8B4 /* ChatModel.h */,
@@ -566,8 +576,9 @@
 				C9155AA41CFEDCE700F304EB /* PBConst.h */,
 				C971D71F1CF7087100C9F89C /* 启动页-iphone6.png */,
 				C97E26C51D0576E800DBD8D1 /* download@2x.png */,
+				C97E26D01D06CC2F00DBD8D1 /* ico_filter_gender@2x.png */,
+				C9155A591CFD865500F304EB /* PhotoBrowseAnimation */,
 				C97E26C71D067AD900DBD8D1 /* Tools */,
-				C9155A601CFD927B00F304EB /* PhotoBrowse */,
 				C971D7261CF81C5900C9F89C /* ImagePickerController */,
 				C9897D1D1CE3351700E9F8B4 /* Emotion */,
 				C9897D091CE30AEA00E9F8B4 /* KeyboardTool */,
@@ -617,14 +628,6 @@
 				C9155A991CFE838000F304EB /* PhotoBrowseTransitionAnimation.m */,
 			);
 			name = PhotoBrowseAnimation;
-			sourceTree = "<group>";
-		};
-		C9155A601CFD927B00F304EB /* PhotoBrowse */ = {
-			isa = PBXGroup;
-			children = (
-				C9155A591CFD865500F304EB /* PhotoBrowseAnimation */,
-			);
-			name = PhotoBrowse;
 			sourceTree = "<group>";
 		};
 		C971D7261CF81C5900C9F89C /* ImagePickerController */ = {
@@ -1018,6 +1021,7 @@
 				130F105D1CE6269B00EDC071 /* Expression_62@2x.png in Resources */,
 				C9897CDE1CE1AFEF00E9F8B4 /* Default-375w-667h@2x.png in Resources */,
 				C97029471CE9B878005A6674 /* press_speak_icon_6@2x.png in Resources */,
+				C97E26D61D06CF9300DBD8D1 /* PersonalViewController.xib in Resources */,
 				C9897D791CE3354000E9F8B4 /* Expression_27@2x.png in Resources */,
 				130F10691CE6269B00EDC071 /* Expression_74@2x.png in Resources */,
 				130F10791CE6269B00EDC071 /* Expression_90@2x.png in Resources */,
@@ -1113,6 +1117,7 @@
 				C9897D951CE3354000E9F8B4 /* Expression_55@2x.png in Resources */,
 				C9897D7E1CE3354000E9F8B4 /* Expression_32@2x.png in Resources */,
 				C971D75E1CF81F4B00C9F89C /* photo_number_icon@2x.png in Resources */,
+				C97E26D11D06CC2F00DBD8D1 /* ico_filter_gender@2x.png in Resources */,
 				130F106E1CE6269B00EDC071 /* Expression_79@2x.png in Resources */,
 				C9897D9B1CE3354000E9F8B4 /* expression.plist in Resources */,
 				130F10781CE6269B00EDC071 /* Expression_89@2x.png in Resources */,
@@ -1234,6 +1239,7 @@
 				C971D73C1CF81CD200C9F89C /* TZImagePickerController.m in Sources */,
 				C971D7251CF7EAA300C9F89C /* ShapedPhotoView.m in Sources */,
 				C9897D051CE3085800E9F8B4 /* ZBExpressionSectionBar.m in Sources */,
+				C97E26D51D06CF9300DBD8D1 /* PersonalViewController.m in Sources */,
 				C971D73D1CF81CD200C9F89C /* TZPhotoPickerController.m in Sources */,
 				C9155AA01CFECF3300F304EB /* PhotoModel.m in Sources */,
 				C971D73B1CF81CD200C9F89C /* TZImageManager.m in Sources */,

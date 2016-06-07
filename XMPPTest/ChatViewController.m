@@ -22,6 +22,8 @@
 #import "PhotoBrowseViewController.h"
 #import "PhotoModel.h"
 
+#import "PersonalViewController.h"
+
 #define  MessageFont [UIFont systemFontOfSize:15]
 #define  MessageMaxWidth (ScreenWidth - 10*6 - 40*2)
 #define  MessageBgTopOffset 6
@@ -129,6 +131,13 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     [super viewDidLoad];
     self.view.backgroundColor = Color(235, 235, 235);
     self.navigationItem.title = self.friendJID.user;
+    
+    UIButton*rightButton = [[UIButton alloc]initWithFrame:CGRectMake(0,0,35,35)];
+    [rightButton setImage:[UIImage imageNamed:@"ico_filter_gender"]forState:UIControlStateNormal];
+    [rightButton addTarget:self action:@selector(rightBtnAction)forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem*rightItem = [[UIBarButtonItem alloc]initWithCustomView:rightButton];
+    self.navigationItem.rightBarButtonItem= rightItem;
+    
     previousToolViewHeight = InputViewHeight;
     [self addNotification];
     [self initilzer];
@@ -145,6 +154,12 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     [self loadData];
     
 
+}
+
+
+-(void)rightBtnAction{
+    PersonalViewController *pv = [[PersonalViewController alloc]init];
+    [self.navigationController pushViewController:pv animated:YES];
 }
 
 - (void)addNotification{

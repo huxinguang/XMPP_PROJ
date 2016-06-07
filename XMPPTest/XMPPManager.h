@@ -13,6 +13,7 @@
 #import "XMPPRosterCoreDataStorage.h"
 #import "XMPPMessageArchivingCoreDataStorage.h"
 
+
 typedef NS_ENUM(NSInteger,ConnectSeverPurpose) {
     ConnectSeverPurposeLogin,
     ConnectSeverPurposeRegister
@@ -26,6 +27,9 @@ typedef NS_ENUM(NSInteger,ConnectSeverPurpose) {
 @property (nonatomic ,strong)XMPPMessageArchiving *xmppMessageArchiving;    //信息归档对象
 @property (nonatomic ,strong)NSManagedObjectContext *context;               //数据管理器
 @property (nonatomic ,strong)XMPPRosterCoreDataStorage *xmppRosterCoreDataStorage;
+
+
+
 
 + (instancetype)shareManager;
 

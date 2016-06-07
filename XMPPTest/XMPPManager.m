@@ -52,6 +52,11 @@
         self.context = xmppMessageArchivingCoreDataStorage.mainThreadManagedObjectContext;
         
         
+        _xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
+        _xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:_xmppvCardStorage];
+        _xmppvCardAvatarModule = [[XMPPvCardAvatarModule alloc] initWithvCardTempModule:_xmppvCardTempModule];
+        
+        
     }
     return self;
 }
