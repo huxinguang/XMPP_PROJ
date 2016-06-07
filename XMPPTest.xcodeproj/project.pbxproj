@@ -101,6 +101,7 @@
 		C971D7611CF81F4B00C9F89C /* preview_number_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C971D7531CF81F4B00C9F89C /* preview_number_icon@2x.png */; };
 		C971D7621CF81F4B00C9F89C /* TableViewArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C971D7541CF81F4B00C9F89C /* TableViewArrow@2x.png */; };
 		C97E26C61D0576E800DBD8D1 /* download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E26C51D0576E800DBD8D1 /* download@2x.png */; };
+		C97E26CD1D06A1AE00DBD8D1 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = C97E26CC1D06A1AE00DBD8D1 /* MBProgressHUD.m */; };
 		C9897CB31CE06A2800E9F8B4 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */; };
 		C9897CBD1CE082D200E9F8B4 /* ChatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CBC1CE082D200E9F8B4 /* ChatModel.m */; };
 		C9897CCB1CE1798F00E9F8B4 /* ChatTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CCA1CE1798F00E9F8B4 /* ChatTextCell.m */; };
@@ -347,6 +348,8 @@
 		C971D7691CF849E600C9F89C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		C971D76A1CF849E600C9F89C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		C97E26C51D0576E800DBD8D1 /* download@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "download@2x.png"; sourceTree = "<group>"; };
+		C97E26CB1D06A1AE00DBD8D1 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		C97E26CC1D06A1AE00DBD8D1 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		C9897CB01CE06A2800E9F8B4 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		C9897CBB1CE082D200E9F8B4 /* ChatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatModel.h; sourceTree = "<group>"; };
@@ -563,6 +566,7 @@
 				C9155AA41CFEDCE700F304EB /* PBConst.h */,
 				C971D71F1CF7087100C9F89C /* 启动页-iphone6.png */,
 				C97E26C51D0576E800DBD8D1 /* download@2x.png */,
+				C97E26C71D067AD900DBD8D1 /* Tools */,
 				C9155A601CFD927B00F304EB /* PhotoBrowse */,
 				C971D7261CF81C5900C9F89C /* ImagePickerController */,
 				C9897D1D1CE3351700E9F8B4 /* Emotion */,
@@ -670,6 +674,15 @@
 				C971D7541CF81F4B00C9F89C /* TableViewArrow@2x.png */,
 			);
 			name = PickerImg;
+			sourceTree = "<group>";
+		};
+		C97E26C71D067AD900DBD8D1 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				C97E26CB1D06A1AE00DBD8D1 /* MBProgressHUD.h */,
+				C97E26CC1D06A1AE00DBD8D1 /* MBProgressHUD.m */,
+			);
+			name = Tools;
 			sourceTree = "<group>";
 		};
 		C9897CCC1CE187FF00E9F8B4 /* image */ = {
@@ -1216,6 +1229,7 @@
 				C98AEB8B1CD9CA25005C7DAC /* XMPPManager.m in Sources */,
 				C9897CFF1CE305D300E9F8B4 /* ZBMessage.m in Sources */,
 				C9155AA31CFEDA6D00F304EB /* PhotoScrollView.m in Sources */,
+				C97E26CD1D06A1AE00DBD8D1 /* MBProgressHUD.m in Sources */,
 				13A7495D1CCC7F4F00F2E86E /* ViewController.m in Sources */,
 				C971D73C1CF81CD200C9F89C /* TZImagePickerController.m in Sources */,
 				C971D7251CF7EAA300C9F89C /* ShapedPhotoView.m in Sources */,

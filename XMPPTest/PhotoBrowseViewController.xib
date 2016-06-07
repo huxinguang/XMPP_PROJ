@@ -30,6 +30,9 @@
                         <constraint firstAttribute="height" constant="32" id="eiq-YB-mnN"/>
                     </constraints>
                     <state key="normal" image="download"/>
+                    <connections>
+                        <action selector="downloadPhotoAction:" destination="-1" eventType="touchUpInside" id="B12-lT-BLy"/>
+                    </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f6d-uy-0v4" userLabel="全部图片">
                     <rect key="frame" x="550" y="550" width="30" height="30"/>

@@ -280,6 +280,31 @@
     
 }
 
+- (IBAction)downloadPhotoAction:(UIButton *)sender {
+    PhotoModel *model = [self.photoModels objectAtIndex:_page];
+    UIImage *img = model.photo;
+    UIImageWriteToSavedPhotosAlbum(img, self, @selector(image:didFinishSavingWithError:contextInfo:), NULL);
+    
+}
+
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+
+    NSString *msg = nil;
+    if(error != NULL){
+        msg = @"保存失败" ;
+    }else{
+        msg = @"保存成功" ;
+    }
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    hud.mode = MBProgressHUDModeCustomView;
+    UIImage *img = [[UIImage imageNamed:@"Checkmark"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    hud.customView = [[UIImageView alloc] initWithImage:img];
+    hud.square = YES;
+    hud.label.text = msg;
+    [hud hideAnimated:YES afterDelay:2.f];
+    
+}
 
 #pragma mark - UINavigationControllerDelegate
 

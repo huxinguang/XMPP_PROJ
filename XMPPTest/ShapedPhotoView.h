@@ -13,6 +13,7 @@
 @property (nonatomic ,strong)CALayer *subLayer;
 @property (nonatomic ,strong)CAShapeLayer *shapeLayer;
 @property (nonatomic ,strong)UIImage *contentImage;
+@property (nonatomic ,strong)UIImage *shapeImage;
 
 - (void)configWithShapeLayerContentImage:(UIImage *)shapeImg subLayerContentImage:(UIImage *)subImg;
 

@@ -12,7 +12,7 @@
 #import "ChatTextCell.h"
 #import "ShapedPhotoView.h"
 
-#define AnimationDuration 5
+#define AnimationDuration 0.2
 
 @implementation PhotoBrowseTransitionAnimation
 
@@ -48,7 +48,6 @@
         [containerView addSubview:toVC.view];
         [containerView addSubview:animationImgView];
 
-        
         cell.photoMsgView.hidden = YES;
         toVC.view.alpha = 0.0;
         for (UIView *item in fromVC.view.subviews) {
@@ -87,31 +86,24 @@
         ChatTextCell *cell = [toVC.chatTableView cellForRowAtIndexPath:toVC.currentIndex];//当浏览图片的过程中翻页时currentIndex会相应改变
         UIView *containerView = [transitionContext containerView];
         
-//        UIImageView *animationImgView = [[UIImageView alloc]initWithImage:fromVC.currentItemView.photoImageView.image];
-//        animationImgView.contentMode = UIViewContentModeScaleAspectFill;
-//        animationImgView.frame = [containerView convertRect:fromVC.currentItemView.photoImageView.frame fromView:fromVC.currentItemView.photoImageView.superview];
-//        [containerView addSubview:toVC.view];
-//        [containerView addSubview:animationImgView];
-        
-        ShapedPhotoView *spv = [[ShapedPhotoView alloc]init];
-        CGRect rect = [containerView convertRect:fromVC.currentItemView.photoImageView.frame fromView:fromVC.currentItemView.photoImageView.superview];
-        
-        
+        UIImageView *animationImgView = [[UIImageView alloc]initWithImage:fromVC.currentItemView.photoImageView.image];
+        animationImgView.contentMode = UIViewContentModeScaleAspectFill;
+        animationImgView.frame = [containerView convertRect:fromVC.currentItemView.photoImageView.frame fromView:fromVC.currentItemView.photoImageView.superview];
         [containerView addSubview:toVC.view];
-        [containerView addSubview:spv];
+        [containerView addSubview:animationImgView];
         
-        spv.frame = rect;
-        
-        if (cell.cm.chatCellOwner == ChatCellOwnerMe) {
-            [spv configWithShapeLayerContentImage:[UIImage imageNamed:@"chat_dialog_me_male"] subLayerContentImage:fromVC.currentItemView.photoImageView.image];
-        }else{
-            [spv configWithShapeLayerContentImage:[UIImage imageNamed:@"chat_dialog_others"] subLayerContentImage:fromVC.currentItemView.photoImageView.image];
-        }
-        
-        
-        
-        
-        
+//        ShapedPhotoView *spv = [[ShapedPhotoView alloc]init];
+//        CGRect rect = [containerView convertRect:fromVC.currentItemView.photoImageView.frame fromView:fromVC.currentItemView.photoImageView.superview];
+//        [containerView addSubview:toVC.view];
+//        [containerView addSubview:spv];
+//    
+//        spv.frame = rect;
+//        
+//        if (cell.cm.chatCellOwner == ChatCellOwnerMe) {
+//            [spv configWithShapeLayerContentImage:[UIImage imageNamed:@"chat_dialog_me_male"] subLayerContentImage:fromVC.currentItemView.photoImageView.image];
+//        }else{
+//            [spv configWithShapeLayerContentImage:[UIImage imageNamed:@"chat_dialog_others"] subLayerContentImage:fromVC.currentItemView.photoImageView.image];
+//        }
         
         
         
@@ -119,37 +111,28 @@
         
         CGRect imageBackRect = [containerView convertRect:cell.photoMsgView.frame fromView:cell.photoMsgView.superview];
         
-        
-        
-        
-        CABasicAnimation *animation  = [CABasicAnimation animationWithKeyPath:@"frame"];
-        animation.duration = AnimationDuration;
-        animation.fromValue =  [NSValue valueWithCGRect:spv.layer.frame];
-        animation.toValue = [NSValue valueWithCGRect:CGRectMake(imageBackRect.origin.x, imageBackRect.origin.y, imageBackRect.size.width, imageBackRect.size.height)];
-        [spv.layer addAnimation:animation forKey:@"frame"];
-        
-//        [UIView animateWithDuration:AnimationDuration animations:^{
-//            toVC.view.alpha = 1.0;
-//            if ([toVC.chatTableView.visibleCells containsObject:cell]) {//不在可视范围内的cell无法确定其photoMsgView的frame,所以不加frame动画，加透明度动画
-////                animationImgView.frame = imageBackRect;
+    
+        [UIView animateWithDuration:AnimationDuration animations:^{
+            toVC.view.alpha = 1.0;
+            if ([toVC.chatTableView.visibleCells containsObject:cell]) {//不在可视范围内的cell无法确定其photoMsgView的frame,所以不加frame动画，加透明度动画
+                animationImgView.frame = imageBackRect;
 //                spv.frame = imageBackRect;
-////                spv.shapeLayer.frame = CGRectMake(0, 0, imageBackRect.size.width, imageBackRect.size.height);
-////                spv.subLayer.frame = CGRectMake(0, 0, imageBackRect.size.width, imageBackRect.size.height);
-//            }else{
-////                animationImgView.alpha = 0;
+            }else{
+                animationImgView.alpha = 0;
 //                spv.alpha = 0;
-//            }
-//            
-//        } completion:^(BOOL finished) {
-//            cell.photoMsgView.hidden = NO;
-////            animationImgView.hidden = YES;
-////            [animationImgView removeFromSuperview];
+            }
+            
+        } completion:^(BOOL finished) {
+            
+            cell.photoMsgView.hidden = NO;
+            animationImgView.hidden = YES;
+            [animationImgView removeFromSuperview];
 //            spv.hidden = YES;
 //            [spv removeFromSuperview];
-//            [transitionContext completeTransition:YES];
-//            toVC.transitionStatus = TransitionStatusEnded;
-//            
-//        }];
+            [transitionContext completeTransition:YES];
+            toVC.transitionStatus = TransitionStatusEnded;
+            
+        }];
     
     
     }
