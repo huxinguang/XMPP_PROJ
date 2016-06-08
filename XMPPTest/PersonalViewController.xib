@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PersonalViewController">
             <connections>
+                <outlet property="iconBtn" destination="BPH-9N-zgC" id="vDV-Ok-vkR"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -14,7 +15,28 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BPH-9N-zgC">
+                    <rect key="frame" x="200" y="200" width="200" height="200"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="200" id="NMb-qp-OY0"/>
+                        <constraint firstAttribute="height" constant="200" id="a8S-6c-wnr"/>
+                    </constraints>
+                    <state key="normal" title="Button" image="Default"/>
+                    <connections>
+                        <action selector="iconClickAction:" destination="-1" eventType="touchUpInside" id="5d0-6G-BQe"/>
+                    </connections>
+                </button>
+            </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="BPH-9N-zgC" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="Mft-OW-ofe"/>
+                <constraint firstItem="BPH-9N-zgC" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="pXu-zN-fnm"/>
+            </constraints>
+            <point key="canvasLocation" x="475" y="418"/>
         </view>
     </objects>
+    <resources>
+        <image name="Default" width="16" height="16"/>
+    </resources>
 </document>

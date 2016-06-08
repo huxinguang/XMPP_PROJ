@@ -12,11 +12,12 @@
 #import "XMPPvCardAvatarModule.h"
 #import "XMPPvCardTemp.h"
 
-@interface PersonalViewController ()
+@interface PersonalViewController ()<UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
-@property (nonatomic , strong) XMPPvCardCoreDataStorage *xmppvCardStorage;
-@property (nonatomic , strong) XMPPvCardTempModule *xmppvCardTempModule;
-@property (nonatomic , strong) XMPPvCardAvatarModule *xmppvCardAvatarModule;
+@property (weak, nonatomic) IBOutlet UIButton *iconBtn;
+//@property (nonatomic , strong) XMPPvCardCoreDataStorage *xmppvCardStorage;
+//@property (nonatomic , strong) XMPPvCardTempModule *xmppvCardTempModule;
+//@property (nonatomic , strong) XMPPvCardAvatarModule *xmppvCardAvatarModule;
 
 @end
 
@@ -25,10 +26,76 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"我";
+    
+//    _xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
+//    _xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:_xmppvCardStorage];
+//    _xmppvCardAvatarModule = [[XMPPvCardAvatarModule alloc] initWithvCardTempModule:_xmppvCardTempModule];
+    
+
+    
+    [[XMPPManager shareManager].xmppvCardTempModule addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    [[XMPPManager shareManager].xmppvCardAvatarModule addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    
+    NSData *photoData = [[XMPPManager shareManager].xmppvCardAvatarModule photoDataForJID:[XMPPManager shareManager].xmppStream.myJID];
+    if (photoData) {
+        [self.iconBtn setImage:[UIImage imageWithData:photoData] forState:UIControlStateNormal];
+    }
+    
+    
+}
+
+- (IBAction)iconClickAction:(UIButton *)sender {
+    
+    UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"拍照",@"相册中选择", nil];
+    [sheet showInView:self.view];
+    
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 0) {
+        
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.delegate = self;
+        if (IsIOS7) {
+            picker.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
+        }
+        // 设置导航默认标题的颜色及字体大小
+        picker.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
+                                                     NSFontAttributeName : [UIFont boldSystemFontOfSize:18]};
+        [self presentViewController:picker animated:YES completion:nil];
+        //
+    }else if(buttonIndex == 1){
+        
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        picker.delegate = self;
+        [self presentViewController:picker animated:YES completion:nil];
+    
+    }else{
+    
+        
+    }
+
+
 }
 
 
-- (void)uploadWithImage:(UIImage *)img {
+#pragma mark - UIImagePickerControllerDelegate
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
+    UIImage *image = info[UIImagePickerControllerOriginalImage];
+    [self updateWithImage:image];
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+
+- (void)updateWithImage:(UIImage *)img {
     dispatch_queue_t  global_queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(global_queue, ^{
         NSString *xmppName = [NSString stringWithFormat:@"%d", 101];
@@ -44,22 +111,35 @@
         [photoXML addChild:binvalXML];
         [vCardXML addChild:photoXML];
         
-        XMPPvCardTemp * myvCardTemp = [_xmppvCardTempModule myvCardTemp];
+        XMPPvCardTemp * myvCardTemp = [[XMPPManager shareManager].xmppvCardTempModule myvCardTemp];
         if (myvCardTemp) {
             myvCardTemp.photo = dataFromImage;
-            [_xmppvCardTempModule activate: [XMPPManager shareManager].xmppStream];
-            [_xmppvCardTempModule updateMyvCardTemp:myvCardTemp];
+            [[XMPPManager shareManager].xmppvCardTempModule activate: [XMPPManager shareManager].xmppStream];
+            [[XMPPManager shareManager].xmppvCardTempModule updateMyvCardTemp:myvCardTemp];
         } else {
             XMPPvCardTemp *newvCardTemp = [XMPPvCardTemp vCardTempFromElement:vCardXML];
             newvCardTemp.nickname = xmppName;
-            [_xmppvCardTempModule activate: [XMPPManager shareManager].xmppStream];
-            [_xmppvCardTempModule updateMyvCardTemp:newvCardTemp];
+            [[XMPPManager shareManager].xmppvCardTempModule activate: [XMPPManager shareManager].xmppStream];
+            [[XMPPManager shareManager].xmppvCardTempModule updateMyvCardTemp:newvCardTemp];
         }
     });
 }
 
+#pragma mark - XMPPvCardTempModuleDelegate
+
 -(void)xmppvCardTempModule:(XMPPvCardTempModule *)vCardTempModule didReceivevCardTemp:(XMPPvCardTemp *)vCardTemp forJID:(XMPPJID *)jid
 {
+    [self.iconBtn setImage:[UIImage imageWithData:vCardTemp.photo] forState:UIControlStateNormal];
+}
+
+
+- (void)xmppvCardTempModuleDidUpdateMyvCard:(XMPPvCardTempModule *)vCardTempModule{
+    NSLog(@"头像设置成功");
+}
+
+- (void)xmppvCardTempModule:(XMPPvCardTempModule *)vCardTempModule failedToUpdateMyvCard:(NSXMLElement *)error{
+
+    NSLog(@"头像设置失败");
 }
 
 - (void)didReceiveMemoryWarning {

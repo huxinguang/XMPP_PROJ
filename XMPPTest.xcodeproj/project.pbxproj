@@ -105,6 +105,7 @@
 		C97E26D11D06CC2F00DBD8D1 /* ico_filter_gender@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E26D01D06CC2F00DBD8D1 /* ico_filter_gender@2x.png */; };
 		C97E26D51D06CF9300DBD8D1 /* PersonalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C97E26D31D06CF9300DBD8D1 /* PersonalViewController.m */; };
 		C97E26D61D06CF9300DBD8D1 /* PersonalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C97E26D41D06CF9300DBD8D1 /* PersonalViewController.xib */; };
+		C97E26DA1D07B84800DBD8D1 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E26D91D07B84800DBD8D1 /* Default.png */; };
 		C9897CB31CE06A2800E9F8B4 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */; };
 		C9897CBD1CE082D200E9F8B4 /* ChatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CBC1CE082D200E9F8B4 /* ChatModel.m */; };
 		C9897CCB1CE1798F00E9F8B4 /* ChatTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CCA1CE1798F00E9F8B4 /* ChatTextCell.m */; };
@@ -357,6 +358,7 @@
 		C97E26D21D06CF9300DBD8D1 /* PersonalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonalViewController.h; sourceTree = "<group>"; };
 		C97E26D31D06CF9300DBD8D1 /* PersonalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonalViewController.m; sourceTree = "<group>"; };
 		C97E26D41D06CF9300DBD8D1 /* PersonalViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PersonalViewController.xib; sourceTree = "<group>"; };
+		C97E26D91D07B84800DBD8D1 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		C9897CB01CE06A2800E9F8B4 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		C9897CBB1CE082D200E9F8B4 /* ChatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatModel.h; sourceTree = "<group>"; };
@@ -574,6 +576,7 @@
 				C9155A9E1CFECF3300F304EB /* PhotoModel.h */,
 				C9155A9F1CFECF3300F304EB /* PhotoModel.m */,
 				C9155AA41CFEDCE700F304EB /* PBConst.h */,
+				C97E26D91D07B84800DBD8D1 /* Default.png */,
 				C971D71F1CF7087100C9F89C /* 启动页-iphone6.png */,
 				C97E26C51D0576E800DBD8D1 /* download@2x.png */,
 				C97E26D01D06CC2F00DBD8D1 /* ico_filter_gender@2x.png */,
@@ -1034,6 +1037,7 @@
 				C9897D1A1CE30D2500E9F8B4 /* input-bar-background.png in Resources */,
 				130F10721CE6269B00EDC071 /* Expression_83@2x.png in Resources */,
 				130F107D1CE6269B00EDC071 /* Expression_94@2x.png in Resources */,
+				C97E26DA1D07B84800DBD8D1 /* Default.png in Resources */,
 				C9897CEF1CE2F51100E9F8B4 /* ToolViewKeyboard_ios7@2x.png in Resources */,
 				C9897D8B1CE3354000E9F8B4 /* Expression_45@2x.png in Resources */,
 				130F106D1CE6269B00EDC071 /* Expression_78@2x.png in Resources */,

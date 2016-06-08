@@ -13,6 +13,11 @@
 #import "XMPPRosterCoreDataStorage.h"
 #import "XMPPMessageArchivingCoreDataStorage.h"
 
+#import "XMPPvCardCoreDataStorage.h"
+#import "XMPPvCardTempModule.h"
+#import "XMPPvCardAvatarModule.h"
+#import "XMPPvCardTemp.h"
+
 
 typedef NS_ENUM(NSInteger,ConnectSeverPurpose) {
     ConnectSeverPurposeLogin,
@@ -27,6 +32,11 @@ typedef NS_ENUM(NSInteger,ConnectSeverPurpose) {
 @property (nonatomic ,strong)XMPPMessageArchiving *xmppMessageArchiving;    //信息归档对象
 @property (nonatomic ,strong)NSManagedObjectContext *context;               //数据管理器
 @property (nonatomic ,strong)XMPPRosterCoreDataStorage *xmppRosterCoreDataStorage;
+
+
+@property (nonatomic , strong) XMPPvCardCoreDataStorage *xmppvCardStorage;
+@property (nonatomic , strong) XMPPvCardTempModule *xmppvCardTempModule;
+@property (nonatomic , strong) XMPPvCardAvatarModule *xmppvCardAvatarModule;
 
 
 

@@ -44,6 +44,8 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     XMPPJID *jid = dataArray[indexPath.row];
+    NSData *photoData = [[XMPPManager shareManager].xmppvCardAvatarModule photoDataForJID:jid];
+    cell.iconImgView.image = [UIImage imageWithData:photoData];
     cell.cellTitleLabel.text = jid.user;
 
     return cell;
