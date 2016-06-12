@@ -106,6 +106,13 @@
 		C97E26D51D06CF9300DBD8D1 /* PersonalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C97E26D31D06CF9300DBD8D1 /* PersonalViewController.m */; };
 		C97E26D61D06CF9300DBD8D1 /* PersonalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C97E26D41D06CF9300DBD8D1 /* PersonalViewController.xib */; };
 		C97E26DA1D07B84800DBD8D1 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E26D91D07B84800DBD8D1 /* Default.png */; };
+		C97E27161D0D155900DBD8D1 /* chat_animation_white1.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E27101D0D155900DBD8D1 /* chat_animation_white1.png */; };
+		C97E27171D0D155900DBD8D1 /* chat_animation_white2.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E27111D0D155900DBD8D1 /* chat_animation_white2.png */; };
+		C97E27181D0D155900DBD8D1 /* chat_animation_white3.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E27121D0D155900DBD8D1 /* chat_animation_white3.png */; };
+		C97E27191D0D155900DBD8D1 /* chat_animation1.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E27131D0D155900DBD8D1 /* chat_animation1.png */; };
+		C97E271A1D0D155900DBD8D1 /* chat_animation2.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E27141D0D155900DBD8D1 /* chat_animation2.png */; };
+		C97E271B1D0D155900DBD8D1 /* chat_animation3.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E27151D0D155900DBD8D1 /* chat_animation3.png */; };
+		C97E271E1D0D490C00DBD8D1 /* UIViewExt.m in Sources */ = {isa = PBXBuildFile; fileRef = C97E271D1D0D490C00DBD8D1 /* UIViewExt.m */; };
 		C9897CB31CE06A2800E9F8B4 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */; };
 		C9897CBD1CE082D200E9F8B4 /* ChatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CBC1CE082D200E9F8B4 /* ChatModel.m */; };
 		C9897CCB1CE1798F00E9F8B4 /* ChatTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CCA1CE1798F00E9F8B4 /* ChatTextCell.m */; };
@@ -359,6 +366,14 @@
 		C97E26D31D06CF9300DBD8D1 /* PersonalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonalViewController.m; sourceTree = "<group>"; };
 		C97E26D41D06CF9300DBD8D1 /* PersonalViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PersonalViewController.xib; sourceTree = "<group>"; };
 		C97E26D91D07B84800DBD8D1 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		C97E27101D0D155900DBD8D1 /* chat_animation_white1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chat_animation_white1.png; sourceTree = "<group>"; };
+		C97E27111D0D155900DBD8D1 /* chat_animation_white2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chat_animation_white2.png; sourceTree = "<group>"; };
+		C97E27121D0D155900DBD8D1 /* chat_animation_white3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chat_animation_white3.png; sourceTree = "<group>"; };
+		C97E27131D0D155900DBD8D1 /* chat_animation1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chat_animation1.png; sourceTree = "<group>"; };
+		C97E27141D0D155900DBD8D1 /* chat_animation2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chat_animation2.png; sourceTree = "<group>"; };
+		C97E27151D0D155900DBD8D1 /* chat_animation3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chat_animation3.png; sourceTree = "<group>"; };
+		C97E271C1D0D490C00DBD8D1 /* UIViewExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIViewExt.h; sourceTree = "<group>"; };
+		C97E271D1D0D490C00DBD8D1 /* UIViewExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIViewExt.m; sourceTree = "<group>"; };
 		C9897CB01CE06A2800E9F8B4 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		C9897CBB1CE082D200E9F8B4 /* ChatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatModel.h; sourceTree = "<group>"; };
@@ -687,6 +702,8 @@
 			children = (
 				C97E26CB1D06A1AE00DBD8D1 /* MBProgressHUD.h */,
 				C97E26CC1D06A1AE00DBD8D1 /* MBProgressHUD.m */,
+				C97E271C1D0D490C00DBD8D1 /* UIViewExt.h */,
+				C97E271D1D0D490C00DBD8D1 /* UIViewExt.m */,
 			);
 			name = Tools;
 			sourceTree = "<group>";
@@ -701,6 +718,12 @@
 				C9897CD91CE1A98A00E9F8B4 /* chat_dialog_me_male@2x.png */,
 				C9897CDA1CE1A98A00E9F8B4 /* chat_dialog_me_male@3x.png */,
 				C9897CDD1CE1AFEF00E9F8B4 /* Default-375w-667h@2x.png */,
+				C97E27101D0D155900DBD8D1 /* chat_animation_white1.png */,
+				C97E27111D0D155900DBD8D1 /* chat_animation_white2.png */,
+				C97E27121D0D155900DBD8D1 /* chat_animation_white3.png */,
+				C97E27131D0D155900DBD8D1 /* chat_animation1.png */,
+				C97E27141D0D155900DBD8D1 /* chat_animation2.png */,
+				C97E27151D0D155900DBD8D1 /* chat_animation3.png */,
 			);
 			name = image;
 			sourceTree = "<group>";
@@ -1028,6 +1051,7 @@
 				C9897D791CE3354000E9F8B4 /* Expression_27@2x.png in Resources */,
 				130F10691CE6269B00EDC071 /* Expression_74@2x.png in Resources */,
 				130F10791CE6269B00EDC071 /* Expression_90@2x.png in Resources */,
+				C97E27181D0D155900DBD8D1 /* chat_animation_white3.png in Resources */,
 				C9897D851CE3354000E9F8B4 /* Expression_39@2x.png in Resources */,
 				130F10681CE6269B00EDC071 /* Expression_73@2x.png in Resources */,
 				C971D7201CF7087100C9F89C /* 启动页-iphone6.png in Resources */,
@@ -1046,6 +1070,7 @@
 				C971D75C1CF81F4B00C9F89C /* photo_def_photoPickerVc@2x.png in Resources */,
 				13A749621CCC7F4F00F2E86E /* Assets.xcassets in Resources */,
 				C970294B1CE9B878005A6674 /* press_speak_icon_2@2x.png in Resources */,
+				C97E271B1D0D155900DBD8D1 /* chat_animation3.png in Resources */,
 				C9897CED1CE2F4F700E9F8B4 /* TypeSelectorBtn_Black_ios7@2x.png in Resources */,
 				130F105C1CE6269B00EDC071 /* Expression_61@2x.png in Resources */,
 				C9897D7C1CE3354000E9F8B4 /* Expression_30@2x.png in Resources */,
@@ -1068,12 +1093,14 @@
 				C9897D801CE3354000E9F8B4 /* Expression_34@2x.png in Resources */,
 				C97029491CE9B878005A6674 /* press_speak_icon_4@2x.png in Resources */,
 				C9897D991CE3354000E9F8B4 /* Expression_59@2x.png in Resources */,
+				C97E27171D0D155900DBD8D1 /* chat_animation_white2.png in Resources */,
 				C9897CDC1CE1A98A00E9F8B4 /* chat_dialog_me_male@3x.png in Resources */,
 				130F10601CE6269B00EDC071 /* Expression_65@2x.png in Resources */,
 				C9897D611CE3354000E9F8B4 /* Expression_3@2x.png in Resources */,
 				C9897D5D1CE3354000E9F8B4 /* DeleteEmoticonBtn_ios7@2x.png in Resources */,
 				C9897D171CE30CFB00E9F8B4 /* input-bar-flat@2x.png in Resources */,
 				C9155AA91CFEE5C800F304EB /* PhotoItemView.xib in Resources */,
+				C97E27191D0D155900DBD8D1 /* chat_animation1.png in Resources */,
 				130F10631CE6269B00EDC071 /* Expression_68@2x.png in Resources */,
 				130F106F1CE6269B00EDC071 /* Expression_80@2x.png in Resources */,
 				C9897D0D1CE30B2800E9F8B4 /* sharemore_pic_ios7@2x.png in Resources */,
@@ -1092,6 +1119,7 @@
 				C971D7611CF81F4B00C9F89C /* preview_number_icon@2x.png in Resources */,
 				C9897D831CE3354000E9F8B4 /* Expression_37@2x.png in Resources */,
 				C9897D871CE3354000E9F8B4 /* Expression_41@2x.png in Resources */,
+				C97E27161D0D155900DBD8D1 /* chat_animation_white1.png in Resources */,
 				C9897D8F1CE3354000E9F8B4 /* Expression_49@2x.png in Resources */,
 				C9897D681CE3354000E9F8B4 /* Expression_10@2x.png in Resources */,
 				C9897D691CE3354000E9F8B4 /* Expression_11@2x.png in Resources */,
@@ -1115,6 +1143,7 @@
 				C9897D8A1CE3354000E9F8B4 /* Expression_44@2x.png in Resources */,
 				130F10741CE6269B00EDC071 /* Expression_85@2x.png in Resources */,
 				130F10711CE6269B00EDC071 /* Expression_82@2x.png in Resources */,
+				C97E271A1D0D155900DBD8D1 /* chat_animation2.png in Resources */,
 				130F107A1CE6269B00EDC071 /* Expression_91@2x.png in Resources */,
 				C9897D671CE3354000E9F8B4 /* Expression_9@2x.png in Resources */,
 				130F10751CE6269B00EDC071 /* Expression_86@2x.png in Resources */,
@@ -1263,6 +1292,7 @@
 				C9897CFC1CE304D600E9F8B4 /* ZBMessageShareMenuItem.m in Sources */,
 				C9897D021CE3081700E9F8B4 /* ZBFaceView.m in Sources */,
 				C9897CB31CE06A2800E9F8B4 /* ChatViewController.m in Sources */,
+				C97E271E1D0D490C00DBD8D1 /* UIViewExt.m in Sources */,
 				C9155A9A1CFE838000F304EB /* PhotoBrowseTransitionAnimation.m in Sources */,
 				C971D7431CF81CD200C9F89C /* TZPhotoPreviewCell.m in Sources */,
 				C9155AAC1CFEE78300F304EB /* PhotoImageView.m in Sources */,

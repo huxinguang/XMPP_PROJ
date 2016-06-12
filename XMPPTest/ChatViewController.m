@@ -55,7 +55,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 };
 
 
-@interface ChatViewController ()<UITableViewDataSource,UITableViewDelegate,XMPPStreamDelegate,NSFetchedResultsControllerDelegate,ZBMessageInputViewDelegate,ZBMessageShareMenuViewDelegate,ZBMessageManagerFaceViewDelegate,TZImagePickerControllerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate,SyncCurrentIndexDelegate>{
+@interface ChatViewController ()<UITableViewDataSource,UITableViewDelegate,XMPPStreamDelegate,NSFetchedResultsControllerDelegate,ZBMessageInputViewDelegate,ZBMessageShareMenuViewDelegate,ZBMessageManagerFaceViewDelegate,TZImagePickerControllerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate,SyncCurrentIndexDelegate,AVAudioPlayerDelegate>{
     
     CurrentKeyboard currentKeyboard;
     double animationDuration;
@@ -435,7 +435,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                                 model.chatCellOwner = ChatCellOwnerOther;
                                 model.iconUrl = @"http://imgsrc.baidu.com/forum/w%3D580/sign=2902b5fed662853592e0d229a0ee76f2/7b01722309f790522a7088320ff3d7ca7acbd5f1.jpg";
                             }
-                            //缓存高度
+                            //缓存高  度
                             model.cellHeight = 8 + 150 +8;//图片设定为定高(150)，宽度根据高度而定
                             [_dataArr addObject:model];
                         }
@@ -444,21 +444,33 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                     
                     
                 }
-//                else if ([message.body hasPrefix:@"audio"]){
-//                    model.msgType = MessageTypeVoice;
-//                    XMPPMessage *msg = message.message;
-//                    for (XMPPElement *node in msg.children) {
-//                        if ([node.name isEqualToString:@"attachment"]){
-//                            NSString *base64str = node.stringValue;
-//                            NSData *data = [[NSData alloc]initWithBase64EncodedString:base64str options:0];
-//                            model.data = data;
-//                            NSString *timeStr = [message.body substringFromIndex:6];
-//                            
-//                        }
-//                        
-//                    }
-//                
-//                }
+                else if ([message.body hasPrefix:@"audio"]){
+                    model.msgType = MessageTypeVoice;
+                    XMPPMessage *msg = message.message;
+                    for (XMPPElement *node in msg.children) {
+                        if ([node.name isEqualToString:@"attachment"]){
+                            NSString *base64str = node.stringValue;
+                            NSData *data = [[NSData alloc]initWithBase64EncodedString:base64str options:0];
+                            model.data = data;
+                            NSString *timeStr = [message.body substringFromIndex:6];
+                            float time = [timeStr floatValue];
+                            model.voiceTime = time;
+                            model.msgType = MessageTypeVoice;
+                            if (message.isOutgoing) {
+                                model.chatCellOwner = ChatCellOwnerMe;
+                                model.iconUrl = @"http://img.zcool.cn/community/01c552565bffbc6ac7253403a6ad11.jpg";
+                            }else{
+                                model.chatCellOwner = ChatCellOwnerOther;
+                                model.iconUrl = @"http://imgsrc.baidu.com/forum/w%3D580/sign=2902b5fed662853592e0d229a0ee76f2/7b01722309f790522a7088320ff3d7ca7acbd5f1.jpg";
+                            }
+                            model.cellHeight = MessageBgTopOffset+45+MessageBgBottomOffset;
+                            [_dataArr addObject:model];
+                            
+                        }
+                        
+                    }
+                
+                }
                 else if (message.body && ![message.body isEqualToString:@"image"]) {
                     
                     model.msgType = MessageTypeRichText;
@@ -658,6 +670,9 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             if (cell == nil) {
                 cell = [[ChatTextCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:voiceCellIdentifier];
             }
+            cell.bgImgView.tag = indexPath.row;
+            UITapGestureRecognizer *voiceTapGes = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(voiceClickAction:)];
+            [cell.bgImgView addGestureRecognizer:voiceTapGes];
         }
             break;
             
@@ -722,6 +737,33 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     [self.navigationController pushViewController:pbVC animated:YES];
     
 }
+
+- (void)voiceClickAction:(UITapGestureRecognizer *)gesture{
+    
+    ChatModel *model = [_dataArr objectAtIndex:gesture.view.tag];
+    NSData *voiceData = model.data;
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:gesture.view.tag inSection:0];
+    ChatTextCell *cell = [self.chatTableView cellForRowAtIndexPath:indexPath];
+    
+    // 判断是否正在播放
+    if (player.isPlaying) {
+        [player stop];
+    }
+    if (cell.voiceImg.isAnimating) {
+        [cell.voiceImg stopAnimating];
+    }else{
+        [cell.voiceImg startAnimating];
+    }
+    
+    // 监听播放器播放状态
+    player = [[AVAudioPlayer alloc]initWithData:voiceData error:NULL];
+    player.delegate = self;
+    [player play];
+    
+
+}
+
 
 #pragma mark - UINavigationControllerDelegate
 
@@ -1101,21 +1143,25 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     [voiceAnimationView removeFromSuperview];
     voiceAnimationView = nil;
     
-    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:playName]];
+//    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:playName]];
+    NSData *data = [NSData dataWithContentsOfFile:playName];
     [self sendMessageWithData:data bodyName:[NSString stringWithFormat:@"audio:%.1f", time]];
     
     
-    NSError *playerError;
-    //播放
-    player = nil;
-    player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:playName] error:&playerError];
+//    NSError *playerError;
+//    //播放
+//    player = nil;
+//    player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:playName] error:&playerError];
+//    
+//
+//    if (player == nil)
+//    {
+//        NSLog(@"ERror creating player: %@", [playerError description]);
+//    }else{
+//        [player play];
+//    }
     
-    if (player == nil)
-    {
-        NSLog(@"ERror creating player: %@", [playerError description]);
-    }else{
-        [player play];
-    }
+//    [recorder deleteRecording];
     
 }
 
@@ -1302,7 +1348,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:self.friendJID];
     [message addBody:name];
     // 转换成base64的编码
-    NSString *base64str = [data base64EncodedStringWithOptions:0];
+    NSString *base64str = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
     // 设置节点内容
     XMPPElement *attachment = [XMPPElement elementWithName:@"attachment" stringValue:base64str];
     // 包含子节点

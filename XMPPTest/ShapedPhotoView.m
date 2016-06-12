@@ -23,7 +23,6 @@
     _shapeLayer.contents = (id)shapeImg.CGImage;
     
     
-    
     _subLayer = [CALayer layer];
     _subLayer.mask = _shapeLayer;
     _subLayer.contents = (id)subImg.CGImage;

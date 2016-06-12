@@ -38,6 +38,8 @@ typedef NS_ENUM(NSInteger,MessageType) {
 @property (nonatomic ,strong)NSData *data;
 @property (nonatomic ,assign)int timeLength;
 
+@property (nonatomic ,assign)float voiceTime;
+
 
 
 

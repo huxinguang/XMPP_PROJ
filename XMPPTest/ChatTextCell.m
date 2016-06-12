@@ -14,16 +14,12 @@
 #define MessageBgTopOffset 6
 #define MessageTopOffset 19.5
 #define  MessageFont [UIFont systemFontOfSize:15]
+#define  MessageMaxWidth (ScreenWidth - 10*6 - 40*2)
 
 @interface ChatTextCell ()
 
 @end
 
-
-static NSString *richTextCellIdentifier = @"RichTextCellIdentifier";
-static NSString *photoCellIdentifier = @"PhotoCellIdentifier";
-static NSString *emotionImageCellIdentifier = @"EmotionImageCellIdentifier";
-static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
 
 @implementation ChatTextCell
 
@@ -73,14 +69,15 @@ static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
             
             _bgImgView = [[UIImageView alloc]init];
             [self.contentView addSubview:_bgImgView];
+            _bgImgView.userInteractionEnabled = YES;
             
             _voiceImg = [[UIImageView alloc]init];
             [self.contentView addSubview:_voiceImg];
-            _voiceImg.hidden = YES;
             
         }
         else
         {
+            
         
         }
         
@@ -211,38 +208,54 @@ static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
                 [_iconBtn sd_setImageWithURL:[NSURL URLWithString:model.iconUrl] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@""]];
                 
                 //设置气泡frame
-                CGSize labelSize = model.messageLabelSize;
-                if (model.isSingleLine) {
-                    _bgImgView.frame = CGRectMake(ScreenWidth-Padding-40-(labelSize.width+40), MessageBgTopOffset, labelSize.width+40, 45);
-                }else{
-                    _bgImgView.frame = CGRectMake(ScreenWidth-Padding-40- (labelSize.width+40), MessageBgTopOffset, labelSize.width+40, labelSize.height+27);
-                }
+                CGFloat bubbleWidth = (MessageMaxWidth-66)*(self.cm.voiceTime/60.0)+66;
+                _bgImgView.frame = CGRectMake(ScreenWidth-Padding-40-(bubbleWidth), MessageBgTopOffset, bubbleWidth, 45);
+
                 //气泡拉伸，设置图片
                 UIImage *img = [UIImage imageNamed:@"chat_dialog_me_male"];
                 img = [img resizableImageWithCapInsets:(UIEdgeInsetsMake(img.size.height * 0.8, img.size.width * 0.5, img.size.height * 0.2, img.size.width * 0.5))];
                 _bgImgView.image = img;
+                
+                _voiceImg.image = [UIImage imageNamed:@"chat_animation_white3"];
+                
+                NSMutableArray *imgArr = [NSMutableArray array];
+                for (int i = 0; i < 3; i ++) {
+                    UIImage *animationImg = [UIImage imageNamed:[NSString stringWithFormat:@"chat_animation_white%d",i+1]];
+                    [imgArr addObject:animationImg];
+                }
+                _voiceImg.animationImages = imgArr;
+                _voiceImg.animationDuration = 1.5;
+                
+                _voiceImg.frame = CGRectMake(_bgImgView.right-25-18, _bgImgView.top + 10, 18, 22);
+                
+                
             }else{
                 //设置头像frame
                 _iconBtn.frame = CGRectMake(Padding, OffsetY, 40, 40);
                 [_iconBtn sd_setImageWithURL:[NSURL URLWithString:model.iconUrl] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@""]];
                 
                 //设置气泡frame
-                CGSize labelSize = model.messageLabelSize;
-                if (model.isSingleLine) {
-                    _bgImgView.frame = CGRectMake(Padding+40, MessageBgTopOffset, labelSize.width+40, 45);
-                }else{
-                    _bgImgView.frame = CGRectMake(Padding+40, MessageBgTopOffset, labelSize.width+40, labelSize.height+27);
-                }
-                
+                CGFloat bubbleWidth = (MessageMaxWidth-66)*(self.cm.voiceTime/60.0)+66;
+                _bgImgView.frame = CGRectMake(Padding+40, MessageBgTopOffset, bubbleWidth, 45);
+
                 //气泡拉伸，设置图片
                 UIImage *img = [UIImage imageNamed:@"chat_dialog_others"];
                 img = [img resizableImageWithCapInsets:(UIEdgeInsetsMake(img.size.height*0.8,img.size.width*0.5,img.size.height*0.2,img.size.width*0.5))];
                 _bgImgView.image = img;
                 
-                //设置消息文本frame
-                _messageLabel.frame = CGRectMake(Padding+40+20+3 , MessageTopOffset, labelSize.width, labelSize.height);
-                _messageLabel.attributedText = model.message;
-            
+                
+                _voiceImg.image = [UIImage imageNamed:@"chat_animation3"];
+                
+                NSMutableArray *imgArr = [NSMutableArray array];
+                for (int i = 0; i < 3; i ++) {
+                    UIImage *animationImg = [UIImage imageNamed:[NSString stringWithFormat:@"chat_animation%d",i+1]];
+                    [imgArr addObject:animationImg];
+                }
+                _voiceImg.animationImages = imgArr;
+                _voiceImg.animationDuration = 1.5;
+                
+                _voiceImg.frame  =CGRectMake(_bgImgView.left + 20 , _bgImgView.top +10, 18, 22);
+                
             
             }
             

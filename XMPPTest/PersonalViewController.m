@@ -15,9 +15,6 @@
 @interface PersonalViewController ()<UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *iconBtn;
-//@property (nonatomic , strong) XMPPvCardCoreDataStorage *xmppvCardStorage;
-//@property (nonatomic , strong) XMPPvCardTempModule *xmppvCardTempModule;
-//@property (nonatomic , strong) XMPPvCardAvatarModule *xmppvCardAvatarModule;
 
 @end
 
@@ -26,12 +23,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"我";
-    
-//    _xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
-//    _xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:_xmppvCardStorage];
-//    _xmppvCardAvatarModule = [[XMPPvCardAvatarModule alloc] initWithvCardTempModule:_xmppvCardTempModule];
-    
-
     
     [[XMPPManager shareManager].xmppvCardTempModule addDelegate:self delegateQueue:dispatch_get_main_queue()];
     [[XMPPManager shareManager].xmppvCardAvatarModule addDelegate:self delegateQueue:dispatch_get_main_queue()];
@@ -58,6 +49,7 @@
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         picker.delegate = self;
+        picker.allowsEditing = YES;//设置图片可剪裁
         if (IsIOS7) {
             picker.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
         }
@@ -71,6 +63,7 @@
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         picker.delegate = self;
+        picker.allowsEditing = YES;//设置图片可剪裁
         [self presentViewController:picker animated:YES completion:nil];
     
     }else{
@@ -84,7 +77,8 @@
 
 #pragma mark - UIImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
-    UIImage *image = info[UIImagePickerControllerOriginalImage];
+//    UIImage *image = info[UIImagePickerControllerOriginalImage];
+    UIImage *image = [info objectForKey:@"UIImagePickerControllerEditedImage"];//获取剪裁后的图片
     [self updateWithImage:image];
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
