@@ -74,6 +74,11 @@
             _voiceImg = [[UIImageView alloc]init];
             [self.contentView addSubview:_voiceImg];
             
+            _voiceTimeLabel = [[UILabel alloc]init];
+            _voiceTimeLabel.font = DefaultFont(15);
+            _voiceTimeLabel.textColor = [UIColor grayColor];
+            [self.contentView addSubview:_voiceTimeLabel];
+            
         }
         else
         {
@@ -226,7 +231,11 @@
                 _voiceImg.animationImages = imgArr;
                 _voiceImg.animationDuration = 1.5;
                 
-                _voiceImg.frame = CGRectMake(_bgImgView.right-25-18, _bgImgView.top + 10, 18, 22);
+                _voiceImg.frame = CGRectMake(_bgImgView.right-25-18, _bgImgView.top + 11, 18, 22);
+                
+                _voiceTimeLabel.textAlignment = NSTextAlignmentRight;
+                _voiceTimeLabel.text = [NSString stringWithFormat:@"%d''",(int)self.cm.voiceTime];
+                _voiceTimeLabel.frame = CGRectMake(_bgImgView.left-50, _bgImgView.bottom-30, 45, 20);
                 
                 
             }else{
@@ -254,7 +263,11 @@
                 _voiceImg.animationImages = imgArr;
                 _voiceImg.animationDuration = 1.5;
                 
-                _voiceImg.frame  =CGRectMake(_bgImgView.left + 20 , _bgImgView.top +10, 18, 22);
+                _voiceImg.frame  =CGRectMake(_bgImgView.left + 20 , _bgImgView.top +11, 18, 22);
+                
+                _voiceTimeLabel.textAlignment = NSTextAlignmentLeft;
+                _voiceTimeLabel.text = [NSString stringWithFormat:@"%d''",(int)self.cm.voiceTime];
+                _voiceTimeLabel.frame = CGRectMake(_bgImgView.right+2, _bgImgView.bottom-30, 45, 20);
                 
             
             }
