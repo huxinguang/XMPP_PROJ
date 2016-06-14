@@ -142,7 +142,7 @@
                     _bgImgView.frame = CGRectMake(Padding+40, MessageBgTopOffset, labelSize.width+40, labelSize.height+27);
                 }
                 
-                //气泡拉伸，设置图片
+                //气 泡拉伸，设置图片
                 UIImage *img = [UIImage imageNamed:@"chat_dialog_others"];
                 img = [img resizableImageWithCapInsets:(UIEdgeInsetsMake(img.size.height*0.8,img.size.width*0.5,img.size.height*0.2,img.size.width*0.5))];
                 _bgImgView.image = img;

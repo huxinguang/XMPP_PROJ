@@ -74,6 +74,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     
     
     NSMutableArray *chatModelArr;//含图片的ChatModel
+    
+    NSIndexPath *audioPlayingIndexPath;//当前正在播放的声音所在的位置
 }
 
 
@@ -424,8 +426,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                         if ([node.name isEqualToString:@"attachment"]) {
                             // 取出消息的解码
                             NSString *base64str = node.stringValue;
-                            NSData *data = [[NSData alloc]initWithBase64EncodedString:base64str options:0];
-                            UIImage *image = [[UIImage alloc]initWithData:data];
+                            NSData *data = [[NSData alloc]initWithBase64EncodedString:base64str options:NSDataBase64DecodingIgnoreUnknownCharacters];
+                            UIImage *image = [[UIImage alloc]initWithData:data scale:1];
                             model.photo = image;
                             model.msgType = MessageTypePhoto;
                             if (message.isOutgoing) {
@@ -450,7 +452,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                     for (XMPPElement *node in msg.children) {
                         if ([node.name isEqualToString:@"attachment"]){
                             NSString *base64str = node.stringValue;
-                            NSData *data = [[NSData alloc]initWithBase64EncodedString:base64str options:0];
+                            NSData *data = [[NSData alloc]initWithBase64EncodedString:base64str options:NSDataBase64DecodingIgnoreUnknownCharacters];
                             model.data = data;
                             NSString *timeStr = [message.body substringFromIndex:6];
                             float time = [timeStr floatValue];
@@ -740,28 +742,35 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 - (void)voiceClickAction:(UITapGestureRecognizer *)gesture{
     
-    ChatModel *model = [_dataArr objectAtIndex:gesture.view.tag];
-    NSData *voiceData = model.data;
-    
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:gesture.view.tag inSection:0];
     ChatTextCell *cell = [self.chatTableView cellForRowAtIndexPath:indexPath];
-    
-    // 判断是否正在播放
-    if (player.isPlaying) {
-        [player stop];
-    }
+
     if (cell.voiceImg.isAnimating) {
         [cell.voiceImg stopAnimating];
     }else{
         [cell.voiceImg startAnimating];
+        audioPlayingIndexPath = indexPath;
     }
     
-    // 监听播放器播放状态
-    player = [[AVAudioPlayer alloc]initWithData:voiceData error:NULL];
+    if (player.isPlaying){
+        [player stop];
+    }
+    
+    ChatModel *model = [_dataArr objectAtIndex:gesture.view.tag];
+    player = [[AVAudioPlayer alloc]initWithData:model.data error:NULL];
     player.delegate = self;
     [player play];
     
 
+}
+
+#pragma mark - AVAudioPlayerDelegate
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag{
+    ChatTextCell *cell = [self.chatTableView cellForRowAtIndexPath:audioPlayingIndexPath];
+    if (cell.voiceImg.isAnimating) {
+        [cell.voiceImg stopAnimating];
+    }
 }
 
 
@@ -833,6 +842,12 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     [self refreshWithFetchedMessageArray:fetchArray];
     
 }
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(nullable NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(nullable NSIndexPath *)newIndexPath{
+
+
+}
+
 
 #pragma mark -keyboard
 
