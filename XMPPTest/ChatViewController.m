@@ -685,6 +685,11 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     [cell configCellWithModel:model];
     cell.iconBtn.tag = indexPath.row;
     [cell.iconBtn addTarget:self action:@selector(cellIconClickAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    if (indexPath == audioPlayingIndexPath && player.isPlaying) {
+        [cell.voiceImg startAnimating];
+    }
+    
     return cell;
 }
 
@@ -744,24 +749,40 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:gesture.view.tag inSection:0];
     ChatTextCell *cell = [self.chatTableView cellForRowAtIndexPath:indexPath];
-
-    if (cell.voiceImg.isAnimating) {
-        [cell.voiceImg stopAnimating];
+    
+    if (player && player.isPlaying){
+        
+        [player stop];
+        player = nil;
+        if (indexPath != audioPlayingIndexPath) {
+            ChatTextCell *oldCell = [self.chatTableView cellForRowAtIndexPath:audioPlayingIndexPath];
+            [oldCell.voiceImg stopAnimating];
+            
+            ChatModel *model = [_dataArr objectAtIndex:gesture.view.tag];
+            player = [[AVAudioPlayer alloc]initWithData:model.data error:NULL];
+            player.delegate = self;
+            [player play];
+            
+            [cell.voiceImg startAnimating];
+            audioPlayingIndexPath = indexPath;
+        }else{
+            [cell.voiceImg stopAnimating];
+        }
+        
     }else{
+
+        player = nil;
+    
+        ChatModel *model = [_dataArr objectAtIndex:gesture.view.tag];
+        player = [[AVAudioPlayer alloc]initWithData:model.data error:NULL];
+        player.delegate = self;
+        [player play];
+        
         [cell.voiceImg startAnimating];
         audioPlayingIndexPath = indexPath;
     }
     
-    if (player.isPlaying){
-        [player stop];
-    }
     
-    ChatModel *model = [_dataArr objectAtIndex:gesture.view.tag];
-    player = [[AVAudioPlayer alloc]initWithData:model.data error:NULL];
-    player.delegate = self;
-    [player play];
-    
-
 }
 
 #pragma mark - AVAudioPlayerDelegate
@@ -771,6 +792,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     if (cell.voiceImg.isAnimating) {
         [cell.voiceImg stopAnimating];
     }
+    
 }
 
 
