@@ -21,4 +21,5 @@ typedef NS_ENUM(NSInteger,TransitionStatus) {
 @property (nonatomic ,strong)UITableView *chatTableView;
 @property (nonatomic ,assign)NSIndexPath *currentIndex;//点击的图片所在的cell
 @property (nonatomic ,assign)TransitionStatus transitionStatus;
+@property (nonatomic ,assign)BOOL isEditingCell;
 @end

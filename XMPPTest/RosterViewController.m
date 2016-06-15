@@ -64,6 +64,7 @@
     
     ChatViewController *chatVC = [[ChatViewController alloc]init];
     chatVC.transitionStatus = TransitionStatusNone;
+    chatVC.isEditingCell = NO;
     chatVC.friendJID = jid;
     [self.navigationController pushViewController:chatVC animated:YES];
 

@@ -76,6 +76,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     NSMutableArray *chatModelArr;//含图片的ChatModel
     
     NSIndexPath *audioPlayingIndexPath;//当前正在播放的声音所在的位置
+    
+    
 }
 
 
@@ -612,18 +614,28 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     return _fetchedResultsController;
 }
 
+- (void)deleteMessage:(XMPPMessageArchiving_Message_CoreDataObject *)coreDataObject{
+//    id <NSFetchedResultsSectionInfo>  info=self.fetchedResultsController.sections[0];
+//    NSArray *fetchArray = [info objects];
+    NSManagedObjectContext *context = [XMPPManager shareManager].context;
+    [context deleteObject:coreDataObject];
+    if ([context save:nil]) {
+        NSLog(@"删除成功");
+    }
+    
+}
+
 
 #pragma mark - UITableViewDataSource
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     //显示时滚动到底部
     
-    if (self.transitionStatus == TransitionStatusNone) {
+    if (self.transitionStatus == TransitionStatusNone && self.isEditingCell == NO) {
         if (tableView.contentSize.height >= tableView.frame.size.height) {
             [tableView setContentOffset:CGPointMake(0, tableView.contentSize.height-tableView.frame.size.height) animated:NO];
         }
     }
-
     return _dataArr.count;
 }
 
@@ -702,7 +714,15 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [self hideKeyboard];
+    
+
+    id <NSFetchedResultsSectionInfo>  info=self.fetchedResultsController.sections[0];
+    NSArray *fetchArray = [info objects];
+    XMPPMessageArchiving_Message_CoreDataObject *coreDataObject = [fetchArray objectAtIndex:indexPath.row];
+    [self deleteMessage:coreDataObject];
 }
+
+
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
     if (self.messageToolView.frame.origin.y + self.messageToolView.frame.size.height !=  CGRectGetHeight(self.view.frame)) {
@@ -858,7 +878,11 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller{
-
+    
+    if (self.isEditingCell) {
+        return;
+    }
+    
     id <NSFetchedResultsSectionInfo>  info=[controller.sections firstObject];
     NSArray *fetchArray = [info objects];
     [self refreshWithFetchedMessageArray:fetchArray];
@@ -866,10 +890,24 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(nullable NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(nullable NSIndexPath *)newIndexPath{
-
+    
+    self.isEditingCell = YES;
+    if (type == NSFetchedResultsChangeDelete) {
+        [_dataArr removeObjectAtIndex:indexPath.row];
+        [self.chatTableView beginUpdates];
+        [self.chatTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [self.chatTableView endUpdates];
+    }
+    [self.chatTableView reloadData];
+    
+    [self performSelector:@selector(updateCellEditingState) withObject:nil afterDelay:1];
 
 }
 
+
+- (void)updateCellEditingState{
+    self.isEditingCell = NO;
+}
 
 #pragma mark -keyboard
 
@@ -1176,11 +1214,20 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     recorder = nil;
     [timer invalidate];
     timer = nil;
-
+    
     [voiceAnimationView removeFromSuperview];
     voiceAnimationView = nil;
     
-//    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:playName]];
+    if (time <1.5) {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+        hud.mode = MBProgressHUDModeCustomView;
+        hud.square = YES;
+        hud.label.text = @"录音时间太短";
+        [hud hideAnimated:YES afterDelay:2.f];
+        return ;
+    }
+    
+
     NSData *data = [NSData dataWithContentsOfFile:playName];
     [self sendMessageWithData:data bodyName:[NSString stringWithFormat:@"audio:%.1f", time]];
     
