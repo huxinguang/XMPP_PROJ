@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XMPPTest/ChatViewController.m"
-            timestampString = "487745679.462248"
+            timestampString = "487752523.688921"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1269"
-            endingLineNumber = "1269"
+            startingLineNumber = "1279"
+            endingLineNumber = "1279"
             landmarkName = "-didFinishRecoingVoiceAction"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XMPPTest/ChatViewController.m"
-            timestampString = "487745679.462248"
+            timestampString = "487752523.688921"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1424"
-            endingLineNumber = "1424"
+            startingLineNumber = "1434"
+            endingLineNumber = "1434"
             landmarkName = "-tzImagePickerController:didFinishPickingPhotos:sourceAssets:"
             landmarkType = "5">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XMPPTest/ChatViewController.m"
-            timestampString = "487745679.462248"
+            timestampString = "487752523.688921"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1474"
-            endingLineNumber = "1474"
+            startingLineNumber = "1484"
+            endingLineNumber = "1484"
             landmarkName = "-sendMessageWithData:bodyName:"
             landmarkType = "5">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XMPPTest/ChatViewController.m"
-            timestampString = "487745679.462248"
+            timestampString = "487752523.688921"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1478"
-            endingLineNumber = "1478"
+            startingLineNumber = "1488"
+            endingLineNumber = "1488"
             landmarkName = "-sendMessageWithData:bodyName:"
             landmarkType = "5">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XMPPTest/ChatViewController.m"
-            timestampString = "487744637.821712"
+            timestampString = "487752297.097289"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "806"
-            endingLineNumber = "806"
+            startingLineNumber = "811"
+            endingLineNumber = "811"
             landmarkName = "-longPressAction:"
             landmarkType = "5">
          </BreakpointContent>

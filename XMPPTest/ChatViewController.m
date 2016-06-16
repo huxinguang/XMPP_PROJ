@@ -662,6 +662,9 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             UITapGestureRecognizer *photoCellTapGes = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(photoClickAction:)];
             [cell.photoMsgView addGestureRecognizer:photoCellTapGes];
             
+            UILongPressGestureRecognizer *longPressGes = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressAction:)];
+            [cell.photoMsgView addGestureRecognizer:longPressGes];
+            
         }
             break;
         case MessageTypeEmotionImage:
@@ -681,6 +684,9 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             cell.bgImgView.tag = indexPath.row;
             UITapGestureRecognizer *voiceTapGes = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(voiceClickAction:)];
             [cell.bgImgView addGestureRecognizer:voiceTapGes];
+            
+            UILongPressGestureRecognizer *longPressGes = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressAction:)];
+            [cell.bgImgView addGestureRecognizer:longPressGes];
         }
             break;
             
@@ -801,12 +807,16 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
         currentDeleteIndexPath = [NSIndexPath indexPathForRow:gesture.view.tag inSection:0];
         ChatTextCell *cell = [self.chatTableView cellForRowAtIndexPath:currentDeleteIndexPath];
         
-        
         [self becomeFirstResponder];//要显示UIMenuController，必须设置
         UIMenuController *menuCtrl = [UIMenuController sharedMenuController];
         UIMenuItem *menuItem = [[UIMenuItem alloc]initWithTitle:@"删除" action:@selector(deleteAction)];
         menuCtrl.menuItems = @[menuItem];
-        [menuCtrl setTargetRect:cell.bgImgView.frame inView:cell];
+        if (cell.cm.msgType == MessageTypePhoto) {
+            [menuCtrl setTargetRect:cell.photoMsgView.frame inView:cell];
+        }else{
+            [menuCtrl setTargetRect:cell.bgImgView.frame inView:cell];
+        }
+        
         [menuCtrl setMenuVisible:YES animated:YES];
     }
     
