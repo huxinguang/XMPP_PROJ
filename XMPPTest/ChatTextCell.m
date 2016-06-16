@@ -39,6 +39,7 @@
             
             _bgImgView = [[UIImageView alloc]init];
             [self.contentView addSubview:_bgImgView];
+            _bgImgView.userInteractionEnabled = YES;
             
             _messageLabel = [[UILabel alloc]init];
             _messageLabel.font = MessageFont;

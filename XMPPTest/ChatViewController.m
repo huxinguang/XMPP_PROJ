@@ -77,6 +77,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     
     NSIndexPath *audioPlayingIndexPath;//当前正在播放的声音所在的位置
     
+    NSIndexPath *currentDeleteIndexPath;
+    
     
 }
 
@@ -614,17 +616,6 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     return _fetchedResultsController;
 }
 
-- (void)deleteMessage:(XMPPMessageArchiving_Message_CoreDataObject *)coreDataObject{
-//    id <NSFetchedResultsSectionInfo>  info=self.fetchedResultsController.sections[0];
-//    NSArray *fetchArray = [info objects];
-    NSManagedObjectContext *context = [XMPPManager shareManager].context;
-    [context deleteObject:coreDataObject];
-    if ([context save:nil]) {
-        NSLog(@"删除成功");
-    }
-    
-}
-
 
 #pragma mark - UITableViewDataSource
 
@@ -656,6 +647,9 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             if (cell == nil) {
                 cell = [[ChatTextCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:richTextCellIdentifier];
             }
+            cell.bgImgView.tag = indexPath.row;
+            UILongPressGestureRecognizer *longPressGes = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressAction:)];
+            [cell.bgImgView addGestureRecognizer:longPressGes];
         }
             break;
         case MessageTypePhoto:
@@ -714,12 +708,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [self hideKeyboard];
-    
 
-    id <NSFetchedResultsSectionInfo>  info=self.fetchedResultsController.sections[0];
-    NSArray *fetchArray = [info objects];
-    XMPPMessageArchiving_Message_CoreDataObject *coreDataObject = [fetchArray objectAtIndex:indexPath.row];
-    [self deleteMessage:coreDataObject];
 }
 
 
@@ -804,6 +793,54 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     
     
 }
+
+
+- (void)longPressAction:(UILongPressGestureRecognizer *)gesture{
+    
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        currentDeleteIndexPath = [NSIndexPath indexPathForRow:gesture.view.tag inSection:0];
+        ChatTextCell *cell = [self.chatTableView cellForRowAtIndexPath:currentDeleteIndexPath];
+        
+        
+        [self becomeFirstResponder];//要显示UIMenuController，必须设置
+        UIMenuController *menuCtrl = [UIMenuController sharedMenuController];
+        UIMenuItem *menuItem = [[UIMenuItem alloc]initWithTitle:@"删除" action:@selector(deleteAction)];
+        menuCtrl.menuItems = @[menuItem];
+        [menuCtrl setTargetRect:cell.bgImgView.frame inView:cell];
+        [menuCtrl setMenuVisible:YES animated:YES];
+    }
+    
+}
+
+//要显示UIMenuController，必须设置
+-(BOOL)canBecomeFirstResponder{
+    
+    return YES;
+}
+
+-(BOOL)canPerformAction:(SEL)action withSender:(id)sender{
+    
+    if (action == @selector(deleteAction)){
+        return YES;
+    }
+    return NO;//隐藏系统默认的菜单项
+}
+
+
+
+- (void)deleteAction{
+    
+    id <NSFetchedResultsSectionInfo>  info=self.fetchedResultsController.sections[0];
+    NSArray *fetchArray = [info objects];
+    XMPPMessageArchiving_Message_CoreDataObject *coreDataObject = [fetchArray objectAtIndex:currentDeleteIndexPath.row];
+    NSManagedObjectContext *context = [XMPPManager shareManager].context;
+    [context deleteObject:coreDataObject];
+    if ([context save:nil]) {
+        NSLog(@"删除成功");
+    }
+
+}
+
 
 #pragma mark - AVAudioPlayerDelegate
 
@@ -891,21 +928,21 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(nullable NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(nullable NSIndexPath *)newIndexPath{
     
-    self.isEditingCell = YES;
     if (type == NSFetchedResultsChangeDelete) {
+        self.isEditingCell = YES;
         [_dataArr removeObjectAtIndex:indexPath.row];
         [self.chatTableView beginUpdates];
         [self.chatTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         [self.chatTableView endUpdates];
+        
+        [self performSelector:@selector(updateCellEditingState) withObject:nil afterDelay:0.5];
     }
-    [self.chatTableView reloadData];
     
-    [self performSelector:@selector(updateCellEditingState) withObject:nil afterDelay:1];
-
 }
 
 
 - (void)updateCellEditingState{
+    [self.chatTableView reloadData];
     self.isEditingCell = NO;
 }
 
