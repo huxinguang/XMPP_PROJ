@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XMPPTest/ChatViewController.m"
-            timestampString = "487752523.688921"
+            timestampString = "488112846.920773"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1279"
-            endingLineNumber = "1279"
-            landmarkName = "-didFinishRecoingVoiceAction"
+            startingLineNumber = "1377"
+            endingLineNumber = "1377"
+            landmarkName = "-didCancelRecordingVoiceAction"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -42,12 +42,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XMPPTest/ChatViewController.m"
-            timestampString = "487752523.688921"
+            timestampString = "488112846.920773"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1434"
-            endingLineNumber = "1434"
-            landmarkName = "-tzImagePickerController:didFinishPickingPhotos:sourceAssets:"
+            startingLineNumber = "1532"
+            endingLineNumber = "1532"
+            landmarkName = "-levelTimer:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -58,12 +58,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XMPPTest/ChatViewController.m"
-            timestampString = "487752523.688921"
+            timestampString = "488112846.920773"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1484"
-            endingLineNumber = "1484"
-            landmarkName = "-sendMessageWithData:bodyName:"
+            startingLineNumber = "1582"
+            endingLineNumber = "1582"
+            landmarkName = "-openCamera"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -74,12 +74,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XMPPTest/ChatViewController.m"
-            timestampString = "487752523.688921"
+            timestampString = "488112846.920773"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1488"
-            endingLineNumber = "1488"
-            landmarkName = "-sendMessageWithData:bodyName:"
+            startingLineNumber = "1586"
+            endingLineNumber = "1586"
+            landmarkName = "@implementation ChatViewController"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "XMPPTest/ChatViewController.m"
+            timestampString = "488113002.159721"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "410"
+            endingLineNumber = "410"
+            landmarkName = "-loadData"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -90,12 +106,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XMPPTest/ChatViewController.m"
-            timestampString = "487752297.097289"
+            timestampString = "488113007.032273"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "811"
-            endingLineNumber = "811"
-            landmarkName = "-longPressAction:"
+            startingLineNumber = "1074"
+            endingLineNumber = "1074"
+            landmarkName = "-controllerDidChangeContent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

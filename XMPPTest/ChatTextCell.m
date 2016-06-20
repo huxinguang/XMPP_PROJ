@@ -81,9 +81,19 @@
             [self.contentView addSubview:_voiceTimeLabel];
             
         }
-        else
+        else if ([reuseIdentifier isEqualToString:@"TimeCellIdentifier"])
         {
-            
+            _timeLabel = [[UILabel alloc]init];
+            _timeLabel.textColor = [UIColor whiteColor];
+            _timeLabel.font = DefaultFont(13);
+            _timeLabel.textAlignment = NSTextAlignmentCenter;
+            _timeLabel.backgroundColor = Color(206, 206, 206);
+            _timeLabel.layer.cornerRadius = 3;
+            _timeLabel.layer.masksToBounds = YES;
+            [self.contentView addSubview:_timeLabel];
+        
+        }else
+        {
         
         }
         
@@ -272,6 +282,15 @@
                 
             
             }
+            
+        }
+            break;
+            
+        case MessageTypeTime:
+        {
+            CGSize size = [model.timeString sizeWithFont:DefaultFont(13)];
+            _timeLabel.frame = CGRectMake(ScreenWidth/2-(size.width + 20)/2, 50/2-24/2, size.width + 20, 24);
+            _timeLabel.text = model.timeString;
             
         }
             break;

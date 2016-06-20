@@ -405,7 +405,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 - (void)loadData{
     
     if ([self.fetchedResultsController performFetch:nil]) {
-        id <NSFetchedResultsSectionInfo>  info=self.fetchedResultsController.sections[0];
+        id <NSFetchedResultsSectionInfo>  info = self.fetchedResultsController.sections[0];
         NSArray *fetchArray = [info objects];
         [self refreshWithFetchedMessageArray:fetchArray];
     }
@@ -422,6 +422,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                 XMPPMessageArchiving_Message_CoreDataObject *message = fetchedArray[i];
                 
                 ChatModel *model = [[ChatModel alloc]init];
+                model.messageDate = message.timestamp;
                 
                 if ([message.body isEqualToString:@"image"]){
                     
@@ -521,6 +522,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                 
             }
             
+            [self insertTimestampForMessageDataArr:_dataArr];
  
             [_chatTableView reloadData];
             
@@ -536,6 +538,130 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 }
 
+//添加时间戳
+- (void)insertTimestampForMessageDataArr:(NSMutableArray *)messageArr{
+    
+    NSMutableArray *timeModelArr = [[NSMutableArray alloc]init];
+    NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc]init];
+    for (ChatModel *model in messageArr) {
+        NSInteger index = [messageArr indexOfObject:model];
+        if (index > 1) {
+            ChatModel *cm = [messageArr objectAtIndex:index -1];
+            if (model.msgType != MessageTypeTime && cm.msgType != MessageTypeTime) {
+                NSTimeInterval difference = [model.messageDate timeIntervalSinceDate:cm.messageDate];
+                if (difference > 60*5) {
+                    
+                    [indexSet addIndex:index];
+                    
+                    NSString *timeString = nil;
+                    
+                    if (difference < 60*60*24*7) {
+                        
+                        NSString *formatStr = @"yyyy-MM-dd HH:mm:ss";
+                        NSDateFormatter *dateFoormatter = [[NSDateFormatter alloc]init];
+                        [dateFoormatter setDateFormat:formatStr];
+                        
+                        timeString = [dateFoormatter stringFromDate:model.messageDate];
+                        
+                        NSTimeInterval secondsPerDay = 24 * 60 * 60;
+                        NSDate *today = [[NSDate alloc] init];
+                        NSDate *yesterday = [today dateByAddingTimeInterval:-secondsPerDay];
+                        
+                        NSString * todayString = [[today description] substringToIndex:10];
+                        NSString * yesterdayString = [[yesterday description] substringToIndex:10];
+                        
+                        NSString * dateString = [[model.messageDate description] substringToIndex:10];
+                        
+                        NSRange range = NSMakeRange(11, 5);
+                        if ([dateString isEqualToString:todayString]) {
+                            timeString = [timeString substringWithRange:range];
+                        }else if ([dateString isEqualToString:yesterdayString]){
+                            timeString = [NSString stringWithFormat:@"昨天 %@",[timeString substringWithRange:range]];
+                        }else{
+                            
+                            NSString *weekDayStr = nil;
+                            NSDateComponents *comps = [[NSDateComponents alloc] init];
+                            NSString *formatStr = @"yyyy-MM-dd HH:mm:ss";
+                            
+                            NSDateFormatter *dateFoormatter = [[NSDateFormatter alloc]init];
+                            [dateFoormatter setDateFormat:formatStr];
+                            timeString = [dateFoormatter stringFromDate:model.messageDate];
+                            
+                            NSString *nowString = [timeString substringToIndex:10];
+                            NSArray *array = [nowString componentsSeparatedByString:@"-"];
+                            
+                            int year = [[array objectAtIndex:0] intValue];
+                            int month = [[array objectAtIndex:1] intValue];
+                            int day = [[array objectAtIndex:2] intValue];
+                            [comps setYear:year];
+                            [comps setMonth:month];
+                            [comps setDay:day];
+                            
+                            NSCalendar *gregorian = [[NSCalendar alloc]initWithCalendarIdentifier:NSGregorianCalendar];
+                            NSDate *date = [gregorian dateFromComponents:comps];
+                            NSDateComponents *weekdayComponents = [gregorian components:NSWeekdayCalendarUnit fromDate:date];
+                            NSInteger week = [weekdayComponents weekday];
+                            week ++;
+                            switch (week) {
+                                case 1:
+                                    weekDayStr = @"星期日";
+                                    break;
+                                case 2:
+                                    weekDayStr = @"星期一";
+                                    break;
+                                case 3:
+                                    weekDayStr = @"星期二";
+                                    break;
+                                case 4:
+                                    weekDayStr = @"星期三";
+                                    break;
+                                case 5:
+                                    weekDayStr = @"星期四";
+                                    break;
+                                case 6:
+                                    weekDayStr = @"星期五";
+                                    break;
+                                case 7:
+                                    weekDayStr = @"星期六";
+                                    break;
+                                default:
+                                    weekDayStr = @"";
+                                    break;
+                            }
+                            
+                            
+                            timeString = [dateFoormatter stringFromDate:model.messageDate];
+                            timeString = [NSString stringWithFormat:@"%@ %@",weekDayStr,[timeString substringWithRange:range]];
+                            
+                        }
+                        
+                    }else{
+                        
+                        NSString *formatStr = @"yyyy年MM月dd日 HH:mm";
+                        NSDateFormatter *dateFoormatter = [[NSDateFormatter alloc]init];
+                        [dateFoormatter setDateFormat:formatStr];
+                        timeString = [dateFoormatter stringFromDate:model.messageDate];
+                        
+                    }
+                    
+                    
+                    ChatModel *m = [[ChatModel alloc]init];
+                    m.msgType = MessageTypeTime;
+                    m.timeString = timeString;
+                    m.cellHeight = 50;
+                    
+                    [timeModelArr addObject:m];
+                    
+                    
+                }
+            }
+            
+        }
+    }
+    
+    [self.dataArr insertObjects:timeModelArr atIndexes:indexSet];
+
+}
 
 - (void)dealWithMessage:(NSMutableAttributedString *)msg{
     //字体
@@ -636,6 +762,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     static NSString *photoCellIdentifier = @"PhotoCellIdentifier";
     static NSString *emotionImageCellIdentifier = @"EmotionImageCellIdentifier";
     static NSString *voiceCellIdentifier = @"VoiceCellIdentifier";
+    static NSString *timeCellIdentifier = @"TimeCellIdentifier";
     
     ChatModel *model = [_dataArr objectAtIndex:indexPath.row];
     ChatTextCell *cell = nil;
@@ -689,14 +816,26 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             [cell.bgImgView addGestureRecognizer:longPressGes];
         }
             break;
+        case MessageTypeTime:
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:timeCellIdentifier];
+            if (cell == nil) {
+                cell = [[ChatTextCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:timeCellIdentifier];
+            }
+            
+        }
+            break;
             
         default:
             break;
     }
     
     [cell configCellWithModel:model];
-    cell.iconBtn.tag = indexPath.row;
-    [cell.iconBtn addTarget:self action:@selector(cellIconClickAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    if (model.msgType != MessageTypeTime) {
+        cell.iconBtn.tag = indexPath.row;
+        [cell.iconBtn addTarget:self action:@selector(cellIconClickAction:) forControlEvents:UIControlEventTouchUpInside];
+    }
     
     if (indexPath == audioPlayingIndexPath && player.isPlaying) {
         [cell.voiceImg startAnimating];
@@ -1278,20 +1417,6 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     NSData *data = [NSData dataWithContentsOfFile:playName];
     [self sendMessageWithData:data bodyName:[NSString stringWithFormat:@"audio:%.1f", time]];
     
-    
-//    NSError *playerError;
-//    //播放
-//    player = nil;
-//    player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:playName] error:&playerError];
-//    
-//
-//    if (player == nil)
-//    {
-//        NSLog(@"ERror creating player: %@", [playerError description]);
-//    }else{
-//        [player play];
-//    }
-    
 //    [recorder deleteRecording];
     
 }
@@ -1406,7 +1531,6 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     }
     
 }
-
 
 - (void)pickPhoto{
     TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:9 delegate:self];

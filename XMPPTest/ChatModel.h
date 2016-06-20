@@ -17,7 +17,8 @@ typedef NS_ENUM(NSInteger,MessageType) {
     MessageTypeRichText,//包括纯文字，纯表情，文字表情混合
     MessageTypePhoto,//相册照片、拍照
     MessageTypeEmotionImage,//表情图片（大）
-    MessageTypeVoice//语音
+    MessageTypeVoice,//语音
+    MessageTypeTime//时间
 };
 
 
@@ -40,6 +41,9 @@ typedef NS_ENUM(NSInteger,MessageType) {
 
 @property (nonatomic ,assign)float voiceTime;
 
+@property (nonatomic ,strong)NSDate *messageDate;
+
+@property (nonatomic ,strong)NSString *timeString;
 
 
 
