@@ -45,6 +45,7 @@ typedef NS_ENUM(NSInteger,MessageType) {
 
 @property (nonatomic ,strong)NSString *timeString;
 
+@property (nonatomic ,strong)XMPPMessage *xmppMsg;
 
 
 

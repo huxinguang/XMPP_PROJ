@@ -419,14 +419,15 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             
             for (int i = 0; i < fetchedArray.count; i++) {
                 
-                XMPPMessageArchiving_Message_CoreDataObject *message = fetchedArray[i];
+                XMPPMessageArchiving_Message_CoreDataObject *coreDataObject = fetchedArray[i];
                 
                 ChatModel *model = [[ChatModel alloc]init];
-                model.messageDate = message.timestamp;
+                model.messageDate = coreDataObject.timestamp;
+                model.xmppMsg = coreDataObject.message;
                 
-                if ([message.body isEqualToString:@"image"]){
+                if ([coreDataObject.body isEqualToString:@"image"]){
                     
-                    XMPPMessage *msg = message.message;
+                    XMPPMessage *msg = coreDataObject.message;
                     for (XMPPElement *node in msg.children) {
                         if ([node.name isEqualToString:@"attachment"]) {
                             // 取出消息的解码
@@ -435,7 +436,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                             UIImage *image = [[UIImage alloc]initWithData:data scale:1];
                             model.photo = image;
                             model.msgType = MessageTypePhoto;
-                            if (message.isOutgoing) {
+                            if (coreDataObject.isOutgoing) {
                                 model.chatCellOwner = ChatCellOwnerMe;
                                 model.iconUrl = @"http://img.zcool.cn/community/01c552565bffbc6ac7253403a6ad11.jpg";
                             }else{
@@ -451,19 +452,19 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                     
                     
                 }
-                else if ([message.body hasPrefix:@"audio"]){
+                else if ([coreDataObject.body hasPrefix:@"audio"]){
                     model.msgType = MessageTypeVoice;
-                    XMPPMessage *msg = message.message;
+                    XMPPMessage *msg = coreDataObject.message;
                     for (XMPPElement *node in msg.children) {
                         if ([node.name isEqualToString:@"attachment"]){
                             NSString *base64str = node.stringValue;
                             NSData *data = [[NSData alloc]initWithBase64EncodedString:base64str options:NSDataBase64DecodingIgnoreUnknownCharacters];
                             model.data = data;
-                            NSString *timeStr = [message.body substringFromIndex:6];
+                            NSString *timeStr = [coreDataObject.body substringFromIndex:6];
                             float time = [timeStr floatValue];
                             model.voiceTime = time;
                             model.msgType = MessageTypeVoice;
-                            if (message.isOutgoing) {
+                            if (coreDataObject.isOutgoing) {
                                 model.chatCellOwner = ChatCellOwnerMe;
                                 model.iconUrl = @"http://img.zcool.cn/community/01c552565bffbc6ac7253403a6ad11.jpg";
                             }else{
@@ -478,12 +479,12 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                     }
                 
                 }
-                else if (message.body && ![message.body isEqualToString:@"image"]) {
+                else if (coreDataObject.body && ![coreDataObject.body isEqualToString:@"image"]) {
                     
                     model.msgType = MessageTypeRichText;
                     
-                    model.message = [[NSMutableAttributedString alloc]initWithString:message.body];
-                    if (message.isOutgoing) {
+                    model.message = [[NSMutableAttributedString alloc]initWithString:coreDataObject.body];
+                    if (coreDataObject.isOutgoing) {
                         model.chatCellOwner = ChatCellOwnerMe;
                         model.iconUrl = @"http://img.zcool.cn/community/01c552565bffbc6ac7253403a6ad11.jpg";
                     }else{
@@ -522,6 +523,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                 
             }
             
+            //添加时间戳
             [self insertTimestampForMessageDataArr:_dataArr];
  
             [_chatTableView reloadData];
@@ -649,6 +651,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                     m.msgType = MessageTypeTime;
                     m.timeString = timeString;
                     m.cellHeight = 50;
+                    m.xmppMsg = nil;
                     
                     [timeModelArr addObject:m];
                     
@@ -658,6 +661,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             
         }
     }
+    NSLog(@"+++++++++++%@",indexSet);
+    NSLog(@"+++++++++++%ld",indexSet.count);
     
     [self.dataArr insertObjects:timeModelArr atIndexes:indexSet];
 
@@ -981,7 +986,16 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     
     id <NSFetchedResultsSectionInfo>  info=self.fetchedResultsController.sections[0];
     NSArray *fetchArray = [info objects];
-    XMPPMessageArchiving_Message_CoreDataObject *coreDataObject = [fetchArray objectAtIndex:currentDeleteIndexPath.row];
+    ChatModel *model = [_dataArr objectAtIndex:currentDeleteIndexPath.row];
+    
+    NSInteger index = 0;
+    for (XMPPMessageArchiving_Message_CoreDataObject *item in fetchArray) {
+        if (item.message == model.xmppMsg) {
+            index = [fetchArray indexOfObject:item];
+        }
+    }
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    XMPPMessageArchiving_Message_CoreDataObject *coreDataObject = [fetchArray objectAtIndex:newIndexPath.row];
     NSManagedObjectContext *context = [XMPPManager shareManager].context;
     [context deleteObject:coreDataObject];
     if ([context save:nil]) {
@@ -1079,9 +1093,19 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     
     if (type == NSFetchedResultsChangeDelete) {
         self.isEditingCell = YES;
-        [_dataArr removeObjectAtIndex:indexPath.row];
+        
+        XMPPMessageArchiving_Message_CoreDataObject *coreDataObject = (XMPPMessageArchiving_Message_CoreDataObject *)anObject;
+        NSInteger index = 0;
+        for (ChatModel *model in _dataArr) {
+            if (model.xmppMsg == coreDataObject.message) {
+                index = [_dataArr indexOfObject:model];
+            }
+        }
+        NSIndexPath *ip = [NSIndexPath indexPathForRow:index inSection:0];
+        
+        [_dataArr removeObjectAtIndex:ip.row];
         [self.chatTableView beginUpdates];
-        [self.chatTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [self.chatTableView deleteRowsAtIndexPaths:@[ip] withRowAnimation:UITableViewRowAnimationFade];
         [self.chatTableView endUpdates];
         
         [self performSelector:@selector(updateCellEditingState) withObject:nil afterDelay:0.5];
