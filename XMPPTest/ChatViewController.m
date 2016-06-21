@@ -542,18 +542,14 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 //添加时间戳
 - (void)insertTimestampForMessageDataArr:(NSMutableArray *)messageArr{
-    
-    NSMutableArray *timeModelArr = [[NSMutableArray alloc]init];
-    NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc]init];
-    for (ChatModel *model in messageArr) {
-        NSInteger index = [messageArr indexOfObject:model];
+    NSMutableArray *msgArr = [NSMutableArray arrayWithArray:messageArr];
+    for (ChatModel *model in msgArr) {
+        NSInteger index = [msgArr indexOfObject:model];
         if (index > 1) {
-            ChatModel *cm = [messageArr objectAtIndex:index -1];
+            ChatModel *cm = [msgArr objectAtIndex:index -1];
             if (model.msgType != MessageTypeTime && cm.msgType != MessageTypeTime) {
                 NSTimeInterval difference = [model.messageDate timeIntervalSinceDate:cm.messageDate];
                 if (difference > 60*5) {
-                    
-                    [indexSet addIndex:index];
                     
                     NSString *timeString = nil;
                     
@@ -653,7 +649,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                     m.cellHeight = 50;
                     m.xmppMsg = nil;
                     
-                    [timeModelArr addObject:m];
+                    NSInteger insertIndex = [_dataArr indexOfObject:model];
+                    [_dataArr insertObject:m atIndex:insertIndex];
                     
                     
                 }
@@ -661,10 +658,6 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             
         }
     }
-    NSLog(@"+++++++++++%@",indexSet);
-    NSLog(@"+++++++++++%ld",indexSet.count);
-    
-    [self.dataArr insertObjects:timeModelArr atIndexes:indexSet];
 
 }
 
