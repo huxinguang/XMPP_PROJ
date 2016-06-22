@@ -396,7 +396,6 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 - (void)sendMsg{
 
-    
     [self sendMessage:nil];
     
 }
@@ -1005,6 +1004,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             index = [fetchArray indexOfObject:item];
         }
     }
+
     NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:index inSection:0];
     XMPPMessageArchiving_Message_CoreDataObject *coreDataObject = [fetchArray objectAtIndex:newIndexPath.row];
     NSManagedObjectContext *context = [XMPPManager shareManager].context;
@@ -1112,11 +1112,42 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                 index = [_dataArr indexOfObject:model];
             }
         }
+        
+        NSMutableArray *indexPathArr = [[NSMutableArray alloc]init];
+        
+        
+        //删除时间戳
+        ChatModel *lastModel = [_dataArr objectAtIndex:index-1];
+        ChatModel *nextModel = nil;
+        if (index + 1 < _dataArr.count) {
+            nextModel = [_dataArr objectAtIndex:index +1];
+        }
+        
+        NSIndexPath *timeIp = nil;
+        if (nextModel) {
+            if (lastModel.msgType == MessageTypeTime && nextModel.msgType == MessageTypeTime) {
+                timeIp = [NSIndexPath indexPathForRow:index-1 inSection:0];
+                [indexPathArr addObject:timeIp];
+            }
+        }else{
+            timeIp = [NSIndexPath indexPathForRow:index-1 inSection:0];
+            [indexPathArr addObject:timeIp];
+        }
+        
         NSIndexPath *ip = [NSIndexPath indexPathForRow:index inSection:0];
         
-        [_dataArr removeObjectAtIndex:ip.row];
+        [indexPathArr addObject:ip];
+        
+        NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc]init];
+        if (timeIp) {
+            [indexSet addIndex:timeIp.row];
+        }
+        [indexSet addIndex:index];
+        [_dataArr removeObjectsAtIndexes:indexSet];
+        
+        
         [self.chatTableView beginUpdates];
-        [self.chatTableView deleteRowsAtIndexPaths:@[ip] withRowAnimation:UITableViewRowAnimationFade];
+        [self.chatTableView deleteRowsAtIndexPaths:indexPathArr withRowAnimation:UITableViewRowAnimationFade];
         [self.chatTableView endUpdates];
         
         [self performSelector:@selector(updateCellEditingState) withObject:nil afterDelay:0.5];
