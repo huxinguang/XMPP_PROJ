@@ -85,10 +85,10 @@
         {
             _timeLabel = [[UILabel alloc]init];
             _timeLabel.textColor = [UIColor whiteColor];
-            _timeLabel.font = DefaultFont(13);
+            _timeLabel.font = DefaultFont(12);
             _timeLabel.textAlignment = NSTextAlignmentCenter;
-            _timeLabel.backgroundColor = Color(206, 206, 206);
-            _timeLabel.layer.cornerRadius = 3;
+            _timeLabel.backgroundColor = Color(210, 210, 210);
+            _timeLabel.layer.cornerRadius = 5;
             _timeLabel.layer.masksToBounds = YES;
             [self.contentView addSubview:_timeLabel];
         
@@ -288,8 +288,8 @@
             
         case MessageTypeTime:
         {
-            CGSize size = [model.timeString sizeWithFont:DefaultFont(13)];
-            _timeLabel.frame = CGRectMake(ScreenWidth/2-(size.width + 20)/2, 50/2-24/2, size.width + 20, 24);
+            CGSize size = [model.timeString sizeWithFont:DefaultFont(12)];
+            _timeLabel.frame = CGRectMake(ScreenWidth/2-(size.width + 20)/2, 40/2-20/2, size.width + 20, 20);
             _timeLabel.text = model.timeString;
             
         }

@@ -545,120 +545,138 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     NSMutableArray *msgArr = [NSMutableArray arrayWithArray:messageArr];
     for (ChatModel *model in msgArr) {
         NSInteger index = [msgArr indexOfObject:model];
-        if (index > 1) {
+        if (index >= 1) {
             ChatModel *cm = [msgArr objectAtIndex:index -1];
             if (model.msgType != MessageTypeTime && cm.msgType != MessageTypeTime) {
                 NSTimeInterval difference = [model.messageDate timeIntervalSinceDate:cm.messageDate];
                 if (difference > 60*5) {
                     
-                    NSString *timeString = nil;
-                    
-                    if (difference < 60*60*24*7) {
-                        
-                        NSString *formatStr = @"yyyy-MM-dd HH:mm:ss";
-                        NSDateFormatter *dateFoormatter = [[NSDateFormatter alloc]init];
-                        [dateFoormatter setDateFormat:formatStr];
-                        
-                        timeString = [dateFoormatter stringFromDate:model.messageDate];
-                        
-                        NSTimeInterval secondsPerDay = 24 * 60 * 60;
-                        NSDate *today = [[NSDate alloc] init];
-                        NSDate *yesterday = [today dateByAddingTimeInterval:-secondsPerDay];
-                        
-                        NSString * todayString = [[today description] substringToIndex:10];
-                        NSString * yesterdayString = [[yesterday description] substringToIndex:10];
-                        
-                        NSString * dateString = [[model.messageDate description] substringToIndex:10];
-                        
-                        NSRange range = NSMakeRange(11, 5);
-                        if ([dateString isEqualToString:todayString]) {
-                            timeString = [timeString substringWithRange:range];
-                        }else if ([dateString isEqualToString:yesterdayString]){
-                            timeString = [NSString stringWithFormat:@"昨天 %@",[timeString substringWithRange:range]];
-                        }else{
-                            
-                            NSString *weekDayStr = nil;
-                            NSDateComponents *comps = [[NSDateComponents alloc] init];
-                            NSString *formatStr = @"yyyy-MM-dd HH:mm:ss";
-                            
-                            NSDateFormatter *dateFoormatter = [[NSDateFormatter alloc]init];
-                            [dateFoormatter setDateFormat:formatStr];
-                            timeString = [dateFoormatter stringFromDate:model.messageDate];
-                            
-                            NSString *nowString = [timeString substringToIndex:10];
-                            NSArray *array = [nowString componentsSeparatedByString:@"-"];
-                            
-                            int year = [[array objectAtIndex:0] intValue];
-                            int month = [[array objectAtIndex:1] intValue];
-                            int day = [[array objectAtIndex:2] intValue];
-                            [comps setYear:year];
-                            [comps setMonth:month];
-                            [comps setDay:day];
-                            
-                            NSCalendar *gregorian = [[NSCalendar alloc]initWithCalendarIdentifier:NSGregorianCalendar];
-                            NSDate *date = [gregorian dateFromComponents:comps];
-                            NSDateComponents *weekdayComponents = [gregorian components:NSWeekdayCalendarUnit fromDate:date];
-                            NSInteger week = [weekdayComponents weekday];
-                            week ++;
-                            switch (week) {
-                                case 1:
-                                    weekDayStr = @"星期日";
-                                    break;
-                                case 2:
-                                    weekDayStr = @"星期一";
-                                    break;
-                                case 3:
-                                    weekDayStr = @"星期二";
-                                    break;
-                                case 4:
-                                    weekDayStr = @"星期三";
-                                    break;
-                                case 5:
-                                    weekDayStr = @"星期四";
-                                    break;
-                                case 6:
-                                    weekDayStr = @"星期五";
-                                    break;
-                                case 7:
-                                    weekDayStr = @"星期六";
-                                    break;
-                                default:
-                                    weekDayStr = @"";
-                                    break;
-                            }
-                            
-                            
-                            timeString = [dateFoormatter stringFromDate:model.messageDate];
-                            timeString = [NSString stringWithFormat:@"%@ %@",weekDayStr,[timeString substringWithRange:range]];
-                            
-                        }
-                        
-                    }else{
-                        
-                        NSString *formatStr = @"yyyy年MM月dd日 HH:mm";
-                        NSDateFormatter *dateFoormatter = [[NSDateFormatter alloc]init];
-                        [dateFoormatter setDateFormat:formatStr];
-                        timeString = [dateFoormatter stringFromDate:model.messageDate];
-                        
-                    }
-                    
-                    
+                    NSString *timeString = [self getTimeStringWithDate:model.messageDate timeInterval:difference];
                     ChatModel *m = [[ChatModel alloc]init];
                     m.msgType = MessageTypeTime;
                     m.timeString = timeString;
-                    m.cellHeight = 50;
+                    m.cellHeight = 40;
                     m.xmppMsg = nil;
                     
                     NSInteger insertIndex = [_dataArr indexOfObject:model];
                     [_dataArr insertObject:m atIndex:insertIndex];
                     
-                    
                 }
             }
             
+        }else{
+            if (model.msgType != MessageTypeTime) {
+                NSTimeInterval difference = [[NSDate date] timeIntervalSinceDate:model.messageDate];
+                NSString *timeString = [self getTimeStringWithDate:model.messageDate timeInterval:difference];
+                ChatModel *m = [[ChatModel alloc]init];
+                m.msgType = MessageTypeTime;
+                m.timeString = timeString;
+                m.cellHeight = 40;
+                m.xmppMsg = nil;
+                [_dataArr insertObject:m atIndex:0];
+            }
+        
+        
+        
         }
     }
 
+}
+
+
+- (NSString *)getTimeStringWithDate:(NSDate *)msgDate timeInterval:(NSTimeInterval)timeInterval{
+    
+    NSString *timeString = nil;
+    
+    if (timeInterval < 60*60*24*7) {
+        
+        NSString *formatStr = @"yyyy-MM-dd HH:mm:ss";
+        NSDateFormatter *dateFoormatter = [[NSDateFormatter alloc]init];
+        [dateFoormatter setDateFormat:formatStr];
+        
+        timeString = [dateFoormatter stringFromDate:msgDate];
+        
+        NSTimeInterval secondsPerDay = 24 * 60 * 60;
+        NSDate *today = [[NSDate alloc] init];
+        NSDate *yesterday = [today dateByAddingTimeInterval:-secondsPerDay];
+        
+        NSString * todayString = [[today description] substringToIndex:10];
+        NSString * yesterdayString = [[yesterday description] substringToIndex:10];
+        
+        NSString * dateString = [[msgDate description] substringToIndex:10];
+        
+        NSRange range = NSMakeRange(11, 5);
+        if ([dateString isEqualToString:todayString]) {
+            timeString = [timeString substringWithRange:range];
+        }else if ([dateString isEqualToString:yesterdayString]){
+            timeString = [NSString stringWithFormat:@"昨天 %@",[timeString substringWithRange:range]];
+        }else{
+            
+            NSString *weekDayStr = nil;
+            NSDateComponents *comps = [[NSDateComponents alloc] init];
+            NSString *formatStr = @"yyyy-MM-dd HH:mm:ss";
+            
+            NSDateFormatter *dateFoormatter = [[NSDateFormatter alloc]init];
+            [dateFoormatter setDateFormat:formatStr];
+            timeString = [dateFoormatter stringFromDate:msgDate];
+            
+            NSString *nowString = [timeString substringToIndex:10];
+            NSArray *array = [nowString componentsSeparatedByString:@"-"];
+            
+            int year = [[array objectAtIndex:0] intValue];
+            int month = [[array objectAtIndex:1] intValue];
+            int day = [[array objectAtIndex:2] intValue];
+            [comps setYear:year];
+            [comps setMonth:month];
+            [comps setDay:day];
+            
+            NSCalendar *gregorian = [[NSCalendar alloc]initWithCalendarIdentifier:NSGregorianCalendar];
+            NSDate *date = [gregorian dateFromComponents:comps];
+            NSDateComponents *weekdayComponents = [gregorian components:NSWeekdayCalendarUnit fromDate:date];
+            NSInteger week = [weekdayComponents weekday];
+            switch (week) {
+                case 1:
+                    weekDayStr = @"星期日";
+                    break;
+                case 2:
+                    weekDayStr = @"星期一";
+                    break;
+                case 3:
+                    weekDayStr = @"星期二";
+                    break;
+                case 4:
+                    weekDayStr = @"星期三";
+                    break;
+                case 5:
+                    weekDayStr = @"星期四";
+                    break;
+                case 6:
+                    weekDayStr = @"星期五";
+                    break;
+                case 7:
+                    weekDayStr = @"星期六";
+                    break;
+                default:
+                    weekDayStr = @"";
+                    break;
+            }
+            
+            
+            timeString = [dateFoormatter stringFromDate:msgDate];
+            timeString = [NSString stringWithFormat:@"%@ %@",weekDayStr,[timeString substringWithRange:range]];
+            
+        }
+        
+    }else{
+        
+        NSString *formatStr = @"yyyy年MM月dd日 HH:mm";
+        NSDateFormatter *dateFoormatter = [[NSDateFormatter alloc]init];
+        [dateFoormatter setDateFormat:formatStr];
+        timeString = [dateFoormatter stringFromDate:msgDate];
+        
+    }
+
+    return timeString;
 }
 
 - (void)dealWithMessage:(NSMutableAttributedString *)msg{
