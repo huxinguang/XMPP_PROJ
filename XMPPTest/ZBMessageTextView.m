@@ -172,4 +172,31 @@
 #pragma end
 
 
+////要显示UIMenuController，必须设置
+//-(BOOL)canBecomeFirstResponder{
+//    
+//    return YES;
+//}
+//
+//- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
+//{
+//    if (action == @selector(paste:) || action == @selector(copy:) || action == @selector(selectAll:) || action == @selector(cut:))
+//    {
+//        return YES;
+//    }else
+//    {
+//        return NO;
+//    }
+//    
+//}
+////覆写
+//- (void)paste:(nullable id)sender{
+//    [super paste:sender];
+////    UIPasteboard *pasteBoard = (UIPasteboard *)sender;
+////    if (pasteBoard.string) {
+////        NSLog(@"++++++++++++++++++%@",pasteBoard.string);
+////    }
+//    
+//}
+
 @end

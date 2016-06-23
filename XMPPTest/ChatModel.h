@@ -30,6 +30,7 @@ typedef NS_ENUM(NSInteger,MessageType) {
 @property (nonatomic ,assign)CGFloat cellHeight;
 //RichText
 @property (nonatomic ,strong)NSMutableAttributedString *message;
+@property (nonatomic ,strong)NSString *msgForPasteBoard;
 @property (nonatomic ,assign)CGSize messageLabelSize;
 @property (nonatomic ,assign)BOOL isSingleLine;
 @property (nonatomic ,assign)CGFloat messageMinHeight;

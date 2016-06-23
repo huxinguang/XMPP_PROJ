@@ -483,6 +483,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                     model.msgType = MessageTypeRichText;
                     
                     model.message = [[NSMutableAttributedString alloc]initWithString:coreDataObject.body];
+                    model.msgForPasteBoard = coreDataObject.body;
                     if (coreDataObject.isOutgoing) {
                         model.chatCellOwner = ChatCellOwnerMe;
                         model.iconUrl = @"http://img.zcool.cn/community/01c552565bffbc6ac7253403a6ad11.jpg";
@@ -998,12 +999,28 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 -(BOOL)canPerformAction:(SEL)action withSender:(id)sender{
     
-    if (action == @selector(deleteAction) || action == @selector(copyAction) || action == @selector(sendAction)){
-        return YES;
+    if (![self.messageToolView.messageInputTextView isFirstResponder]) {
+        if (action == @selector(deleteAction) || action == @selector(copyAction) || action == @selector(sendAction)){
+            return YES;
+        }
+    }else{
+        if (action == @selector(cut:) || action == @selector(paste:) || action == @selector(selectAll:) || action == @selector(copy:)) {
+            return YES;
+        }
+    
     }
+    
     return NO;//隐藏系统默认的菜单项
 }
 
+//覆写
+- (void)paste:(nullable id)sender{
+    [super paste:sender];
+    UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
+    if (pasteBoard.image) {
+        NSLog(@"++++++++++++++复制图片");
+    }
+}
 
 
 - (void)deleteAction{
@@ -1033,9 +1050,9 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     ChatModel *model = [_dataArr objectAtIndex:currentLongPressIndexPath.row];
     UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
     if (model.msgType == MessageTypeRichText) {
-        pasteBoard.string = model.message.string;
+        pasteBoard.string = model.msgForPasteBoard;
     }else if (model.msgType == MessageTypePhoto){
-    
+        pasteBoard.image = model.photo;
     }else{
     
     }
