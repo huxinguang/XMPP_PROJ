@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger,ChatType) {
+    ChatTypeFriend,//单聊
+    chatTypeRoom   //群聊
+};
+
 typedef NS_ENUM(NSInteger,TransitionStatus) {
     TransitionStatusStarted,
     TransitionStatusEnded,
@@ -16,10 +21,12 @@ typedef NS_ENUM(NSInteger,TransitionStatus) {
 
 @interface ChatViewController : UIViewController
 
+@property (nonatomic ,assign)ChatType chatType;
 @property (nonatomic ,strong)XMPPJID *friendJID;
 @property (nonatomic ,strong)NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic ,strong)UITableView *chatTableView;
 @property (nonatomic ,assign)NSIndexPath *currentIndex;//点击的图片所在的cell
 @property (nonatomic ,assign)TransitionStatus transitionStatus;
 @property (nonatomic ,assign)BOOL isEditingCell;
+
 @end

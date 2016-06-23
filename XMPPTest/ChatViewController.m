@@ -77,7 +77,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     
     NSIndexPath *audioPlayingIndexPath;//当前正在播放的声音所在的位置
     
-    NSIndexPath *currentDeleteIndexPath;
+    NSIndexPath *currentLongPressIndexPath;
     
     
 }
@@ -550,7 +550,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                 NSTimeInterval difference = [model.messageDate timeIntervalSinceDate:cm.messageDate];
                 if (difference > 60*5) {
                     
-                    NSString *timeString = [self getTimeStringWithDate:model.messageDate timeInterval:difference];
+                    NSString *timeString = [self getTimeStringWithDate:model.messageDate];
                     ChatModel *m = [[ChatModel alloc]init];
                     m.msgType = MessageTypeTime;
                     m.timeString = timeString;
@@ -565,8 +565,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             
         }else{
             if (model.msgType != MessageTypeTime) {
-                NSTimeInterval difference = [[NSDate date] timeIntervalSinceDate:model.messageDate];
-                NSString *timeString = [self getTimeStringWithDate:model.messageDate timeInterval:difference];
+                NSString *timeString = [self getTimeStringWithDate:model.messageDate];
                 ChatModel *m = [[ChatModel alloc]init];
                 m.msgType = MessageTypeTime;
                 m.timeString = timeString;
@@ -583,8 +582,9 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 }
 
 
-- (NSString *)getTimeStringWithDate:(NSDate *)msgDate timeInterval:(NSTimeInterval)timeInterval{
+- (NSString *)getTimeStringWithDate:(NSDate *)msgDate{
     
+    NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:msgDate];
     NSString *timeString = nil;
     
     if (timeInterval < 60*60*24*7) {
@@ -958,13 +958,27 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 - (void)longPressAction:(UILongPressGestureRecognizer *)gesture{
     
     if (gesture.state == UIGestureRecognizerStateBegan) {
-        currentDeleteIndexPath = [NSIndexPath indexPathForRow:gesture.view.tag inSection:0];
-        ChatTextCell *cell = [self.chatTableView cellForRowAtIndexPath:currentDeleteIndexPath];
+        currentLongPressIndexPath = [NSIndexPath indexPathForRow:gesture.view.tag inSection:0];
+        ChatTextCell *cell = [self.chatTableView cellForRowAtIndexPath:currentLongPressIndexPath];
         
         [self becomeFirstResponder];//要显示UIMenuController，必须设置
         UIMenuController *menuCtrl = [UIMenuController sharedMenuController];
-        UIMenuItem *menuItem = [[UIMenuItem alloc]initWithTitle:@"删除" action:@selector(deleteAction)];
-        menuCtrl.menuItems = @[menuItem];
+        NSMutableArray *itemsArr = [[NSMutableArray alloc]init];
+        
+        UIMenuItem *copyItem = nil;
+        UIMenuItem *sendItem = nil;
+        if (cell.cm.msgType != MessageTypeVoice) {
+            copyItem = [[UIMenuItem alloc]initWithTitle:@"复制" action:@selector(copyAction)];
+            sendItem = [[UIMenuItem alloc]initWithTitle:@"转发" action:@selector(sendAction)];
+            [itemsArr addObject:copyItem];
+            [itemsArr addObject:sendItem];
+        }
+        
+        UIMenuItem *deleteItem = [[UIMenuItem alloc]initWithTitle:@"删除" action:@selector(deleteAction)];
+        [itemsArr addObject:deleteItem];
+        
+        
+        menuCtrl.menuItems = itemsArr;
         if (cell.cm.msgType == MessageTypePhoto) {
             [menuCtrl setTargetRect:cell.photoMsgView.frame inView:cell];
         }else{
@@ -984,7 +998,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 -(BOOL)canPerformAction:(SEL)action withSender:(id)sender{
     
-    if (action == @selector(deleteAction)){
+    if (action == @selector(deleteAction) || action == @selector(copyAction) || action == @selector(sendAction)){
         return YES;
     }
     return NO;//隐藏系统默认的菜单项
@@ -996,7 +1010,7 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     
     id <NSFetchedResultsSectionInfo>  info=self.fetchedResultsController.sections[0];
     NSArray *fetchArray = [info objects];
-    ChatModel *model = [_dataArr objectAtIndex:currentDeleteIndexPath.row];
+    ChatModel *model = [_dataArr objectAtIndex:currentLongPressIndexPath.row];
     
     NSInteger index = 0;
     for (XMPPMessageArchiving_Message_CoreDataObject *item in fetchArray) {
@@ -1015,6 +1029,24 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 }
 
+- (void)copyAction{
+    ChatModel *model = [_dataArr objectAtIndex:currentLongPressIndexPath.row];
+    UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
+    if (model.msgType == MessageTypeRichText) {
+        pasteBoard.string = model.message.string;
+    }else if (model.msgType == MessageTypePhoto){
+    
+    }else{
+    
+    }
+    
+}
+
+
+- (void)sendAction{
+
+
+}
 
 #pragma mark - AVAudioPlayerDelegate
 
@@ -1113,10 +1145,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
             }
         }
         
-        NSMutableArray *indexPathArr = [[NSMutableArray alloc]init];
-        
-        
         //删除时间戳
+        NSMutableArray *indexPathArr = [[NSMutableArray alloc]init];
         ChatModel *lastModel = [_dataArr objectAtIndex:index-1];
         ChatModel *nextModel = nil;
         if (index + 1 < _dataArr.count) {
@@ -1130,8 +1160,10 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
                 [indexPathArr addObject:timeIp];
             }
         }else{
-            timeIp = [NSIndexPath indexPathForRow:index-1 inSection:0];
-            [indexPathArr addObject:timeIp];
+            if (lastModel.msgType == MessageTypeTime) {
+                timeIp = [NSIndexPath indexPathForRow:index-1 inSection:0];
+                [indexPathArr addObject:timeIp];
+            }
         }
         
         NSIndexPath *ip = [NSIndexPath indexPathForRow:index inSection:0];
@@ -1144,7 +1176,6 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
         }
         [indexSet addIndex:index];
         [_dataArr removeObjectsAtIndexes:indexSet];
-        
         
         [self.chatTableView beginUpdates];
         [self.chatTableView deleteRowsAtIndexPaths:indexPathArr withRowAnimation:UITableViewRowAnimationFade];
