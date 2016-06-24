@@ -113,6 +113,8 @@
 		C97E271A1D0D155900DBD8D1 /* chat_animation2.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E27141D0D155900DBD8D1 /* chat_animation2.png */; };
 		C97E271B1D0D155900DBD8D1 /* chat_animation3.png in Resources */ = {isa = PBXBuildFile; fileRef = C97E27151D0D155900DBD8D1 /* chat_animation3.png */; };
 		C97E271E1D0D490C00DBD8D1 /* UIViewExt.m in Sources */ = {isa = PBXBuildFile; fileRef = C97E271D1D0D490C00DBD8D1 /* UIViewExt.m */; };
+		C97E27271D1D29BC00DBD8D1 /* PhotoPasteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C97E27261D1D29BC00DBD8D1 /* PhotoPasteView.xib */; };
+		C97E272A1D1D2E4800DBD8D1 /* PhotoPasteView.m in Sources */ = {isa = PBXBuildFile; fileRef = C97E27291D1D2E4800DBD8D1 /* PhotoPasteView.m */; };
 		C9897CB31CE06A2800E9F8B4 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */; };
 		C9897CBD1CE082D200E9F8B4 /* ChatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CBC1CE082D200E9F8B4 /* ChatModel.m */; };
 		C9897CCB1CE1798F00E9F8B4 /* ChatTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9897CCA1CE1798F00E9F8B4 /* ChatTextCell.m */; };
@@ -374,6 +376,9 @@
 		C97E27151D0D155900DBD8D1 /* chat_animation3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chat_animation3.png; sourceTree = "<group>"; };
 		C97E271C1D0D490C00DBD8D1 /* UIViewExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIViewExt.h; sourceTree = "<group>"; };
 		C97E271D1D0D490C00DBD8D1 /* UIViewExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIViewExt.m; sourceTree = "<group>"; };
+		C97E27261D1D29BC00DBD8D1 /* PhotoPasteView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PhotoPasteView.xib; sourceTree = "<group>"; };
+		C97E27281D1D2E4800DBD8D1 /* PhotoPasteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoPasteView.h; sourceTree = "<group>"; };
+		C97E27291D1D2E4800DBD8D1 /* PhotoPasteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoPasteView.m; sourceTree = "<group>"; };
 		C9897CB01CE06A2800E9F8B4 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		C9897CB11CE06A2800E9F8B4 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		C9897CBB1CE082D200E9F8B4 /* ChatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatModel.h; sourceTree = "<group>"; };
@@ -591,6 +596,9 @@
 				C9155A9E1CFECF3300F304EB /* PhotoModel.h */,
 				C9155A9F1CFECF3300F304EB /* PhotoModel.m */,
 				C9155AA41CFEDCE700F304EB /* PBConst.h */,
+				C97E27281D1D2E4800DBD8D1 /* PhotoPasteView.h */,
+				C97E27291D1D2E4800DBD8D1 /* PhotoPasteView.m */,
+				C97E27261D1D29BC00DBD8D1 /* PhotoPasteView.xib */,
 				C97E26D91D07B84800DBD8D1 /* Default.png */,
 				C971D71F1CF7087100C9F89C /* 启动页-iphone6.png */,
 				C97E26C51D0576E800DBD8D1 /* download@2x.png */,
@@ -1116,6 +1124,7 @@
 				130F10761CE6269B00EDC071 /* Expression_87@2x.png in Resources */,
 				C9897D5E1CE3354000E9F8B4 /* EmoticonBigTipsRight@2x.png in Resources */,
 				C97029481CE9B878005A6674 /* press_speak_icon_5@2x.png in Resources */,
+				C97E27271D1D29BC00DBD8D1 /* PhotoPasteView.xib in Resources */,
 				C971D7611CF81F4B00C9F89C /* preview_number_icon@2x.png in Resources */,
 				C9897D831CE3354000E9F8B4 /* Expression_37@2x.png in Resources */,
 				C9897D871CE3354000E9F8B4 /* Expression_41@2x.png in Resources */,
@@ -1273,6 +1282,7 @@
 				C971D7251CF7EAA300C9F89C /* ShapedPhotoView.m in Sources */,
 				C9897D051CE3085800E9F8B4 /* ZBExpressionSectionBar.m in Sources */,
 				C97E26D51D06CF9300DBD8D1 /* PersonalViewController.m in Sources */,
+				C97E272A1D1D2E4800DBD8D1 /* PhotoPasteView.m in Sources */,
 				C971D73D1CF81CD200C9F89C /* TZPhotoPickerController.m in Sources */,
 				C9155AA01CFECF3300F304EB /* PhotoModel.m in Sources */,
 				C971D73B1CF81CD200C9F89C /* TZImageManager.m in Sources */,

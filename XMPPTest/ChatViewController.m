@@ -23,6 +23,7 @@
 #import "PhotoModel.h"
 
 #import "PersonalViewController.h"
+#import "PhotoPasteView.h"
 
 #define  MessageFont [UIFont systemFontOfSize:15]
 #define  MessageMaxWidth (ScreenWidth - 10*6 - 40*2)
@@ -78,6 +79,8 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
     NSIndexPath *audioPlayingIndexPath;//当前正在播放的声音所在的位置
     
     NSIndexPath *currentLongPressIndexPath;
+    
+    PhotoPasteView *pasteView;
     
     
 }
@@ -1015,12 +1018,42 @@ typedef NS_ENUM(NSInteger,CurrentKeyboard) {
 
 //覆写
 - (void)paste:(nullable id)sender{
-    [super paste:sender];
+
     UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
     if (pasteBoard.image) {
-        NSLog(@"++++++++++++++复制图片");
+        
+        [self hideKeyboard];
+        //粘贴图片
+        pasteView = [[[NSBundle mainBundle]loadNibNamed:@"PhotoPasteView" owner:self options:nil]lastObject];
+        pasteView.backgroundColor = [UIColor colorWithWhite:0.2 alpha:0.7];
+        pasteView.pasteImg.layer.borderColor = Color(200, 200, 200).CGColor;
+        pasteView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight);
+        [[UIApplication sharedApplication].keyWindow addSubview:pasteView];
+        
+        pasteView.pasteImg.image = pasteBoard.image;
+        pasteView.contentMode = UIViewContentModeScaleAspectFit;
+        
+        __block PhotoPasteView *this = pasteView;
+        __weak ChatViewController *weakSelf = self;
+        pasteView.chooseBlock = ^ (BOOL chooseSend){
+            if (chooseSend) {
+                
+                NSData *photoData = UIImageJPEGRepresentation(pasteBoard.image, 1);
+                
+                [weakSelf sendMessageWithData:photoData bodyName:@"image"];
+            }
+            [this removeFromSuperview];
+            this = nil;
+        
+        };
+        
+        
+    }else{
+        [super paste:sender];
     }
 }
+
+
 
 
 - (void)deleteAction{
